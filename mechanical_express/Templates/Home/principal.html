@@ -3,56 +3,164 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-        crossorigin="anonymous"></script>
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
 </head>
-
-
 <body>
-    <div class="container">
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <img src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
-      
-            <div class="container-fluid">
-            
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav">
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">INICIO</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">SOLICITAR SERVICIO</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">CONTACTANOS</a>
-                  </li>
-                  <li class="nav-item dropdown">
-                   
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </nav>
+  <div class="slider-container">
+    <div id="carouselExample" class="carousel slide">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="{% static 'img/slider1.jpg' %}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+          <img src="{% static 'img/slider2.jpg' %}" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+          <img src="{% static 'img/slider3.jpg' %}" class="d-block w-100" alt="...">
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">holaaa</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
     </div>
+</div>
+<br>
+ <center><h2>¡Unete a Mechanical express!</h2></center>
+<div class="cards-container">
+  <div class="cards-wrapper">
+    <div class="card" style="width: 18rem;">
+      <img src="{% static 'img/11668754_20945760.jpg' %}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title"><FONT COLOR=":#000000">Registrase como usuario </FONT></h5>
+        <p class="card-text">Este parrafo es una breve descripcion</p>
+       <center><a href="#" class="btn btn-primary">Registrase</a></center>
+      </div>
+    </div>
+    <div class="card" style="width: 18rem;">
+      <img src="{% static 'img/11668754_20945760.jpg' %}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title"><FONT COLOR=":#000000">Unete  como mecanico domiciliario  </FONT></h5>
+        <p class="card-text">Este parrafo es una breve descripcion</p>
+        <center><a href="#" class="btn btn-primary">Registrase</a></center>
+      </div>
+    </div>
+  </div>
+  
+  <style>
+  .cards-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem; /* Espacio entre tarjetas */
+    margin-top: 2rem;
+  }
+  
+  .card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  </style>
+</div>
+<div class="container">
+  <section class="section section-sm">
+    <div class="container">
+      <br>
+      <h3 class="text-center mb-4"><b>Nuestros Servicios</b></h3>
+      <br>
+      <div class="row">
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card h-100">
+            <div class="card-body text-center">
+              <div class="box-icon-classic-icon fl-bigmug-line-equalization3 mb-3"></div>
+              <h5 class="card-title"><a href="" style="text-decoration: none; color: inherit;">Emparejamiento personalizado</a></h5>
+              <p class="card-text">Nuestro exclusivo sistema de emparejamiento le permite encontrar justo lo que desea para solicitar su mecánico a domicilio.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card h-100">
+            <div class="card-body text-center">
+              <div class="box-icon-classic-icon fl-bigmug-line-circular220 mb-3"></div>
+              <h5 class="card-title"><a href="#" style="text-decoration: none; color: inherit;">Amplia variedad de mecánicos</a></h5>
+              <p class="card-text">Ofrecemos una amplia variedad de mecánicos seleccionados personalmente con destinos a nivel nacional.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card h-100">
+            <div class="card-body text-center">
+              <div class="box-icon-classic-icon fl-bigmug-line-favourites5 mb-3"></div>
+              <h5 class="card-title"><a href="#" style="text-decoration: none; color: inherit;">Servicio altamente cualificado</a></h5>
+              <p class="card-text">Están listos para brindarle el mejor servicio.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card h-100">
+            <div class="card-body text-center">
+              <div class="box-icon-classic-icon fl-bigmug-line-headphones32 mb-3"></div>
+              <h5 class="card-title"><a href="#" style="text-decoration: none; color: inherit;">24/7 Soporte</a></h5>
+              <p class="card-text">Siempre puede obtener apoyo profesional de nuestro personal las 24 horas del día, los 7 días de la semana y hacer cualquier pregunta que tenga.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card h-100">
+            <div class="card-body text-center">
+              <div class="box-icon-classic-icon fl-bigmug-line-hot67 mb-3"></div>
+              <h5 class="card-title"><a href="#" style="text-decoration: none; color: inherit;">Mecánicos cuidadosamente seleccionados</a></h5>
+              <p class="card-text">Nuestro equipo ofrece solo la mejor selección de mecánicos a domicilio.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card h-100">
+            <div class="card-body text-center">
+              <div class="box-icon-classic-icon fl-bigmug-line-wallet26 mb-3"></div>
+              <h5 class="card-title"><a href="#" style="text-decoration: none; color: inherit;">Precio a tus gustos.</a></h5>
+              <p class="card-text">Podrás encontrar precios que se acomoden a tu bolsillo tan solo hablando con el mecánico de tu alcance cercano.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+</div>
+<div>
+  <div class="card mb-3 text-center" style="max-width: 900px; margin: 0 auto;">
+    <div class="row g-0">
+      <div class="col-md-4 d-flex align-items-center">
+        <img src="{% static 'img/mecanicopersona1.jpg' %}" class="img-fluid rounded-circle" style="max-width: 350px; height: auto;" alt="...">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">Brandom rodriguez</h5>
+          <p class="card-text text-start">
+            Un mecánico es un profesional altamente capacitado en el campo de la reparación y el mantenimiento de vehículos, maquinaria y equipos mecánicos. Su trabajo consiste en diagnosticar, reparar y mantener motores, sistemas de transmisión, frenos, suspensión, dirección, sistemas de escape y otros componentes mecánicos de automóviles, camiones, motocicletas, maquinaria pesada y otros tipos de equipos.
+          </p>
+          <button type="button" class="btn btn-outline-primary">Primary</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+</div>
+
+
+
+
 
 </body>
-
 </html>
