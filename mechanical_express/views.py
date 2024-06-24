@@ -39,10 +39,6 @@ def configuracion(request):
 
 #region usuario
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from .models import Usuario, Mecanico
-
 def insertarusuario(request):
     if request.method == "POST":
         role = request.POST.get("role")
