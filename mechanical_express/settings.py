@@ -57,7 +57,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            'mechanical_express/Templates/'
+            os.path.join(BASE_DIR, 'mechanical_express', 'Templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -73,7 +73,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mechanical_express.wsgi.application'
 
-0
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -85,7 +85,7 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3306',
-        'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
     }
 }
 
@@ -118,21 +118,29 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
+USE_L10N = True
+
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,'mechanical_express', 'Public'),
+    os.path.join(BASE_DIR, 'mechanical_express', 'Public'),
 ]
 
-MEDIA_ROOT = 'mechanical_express/Public/img'
- 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'mechanical_express', 'Public', 'img')
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'alexvalderramaguisao@gmail.com'
+EMAIL_HOST_PASSWORD = 'Alexander0809.'
+

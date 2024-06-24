@@ -4,6 +4,7 @@ from .models import Mecanico, Usuario
 
 from django.contrib.auth.models import User
 from .models import Profile
+from django.core.mail import send_mail
 from django.contrib.auth import login, authenticate, logout
 
 #region principal
@@ -130,5 +131,26 @@ def loginusuario(request):
 def logoutusuario(request):
     logout(request)
     return redirect("/Login/login")
+
+def forgot_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        if email:
+            user = User.objects.filter(email=email).first()
+            if user:
+                subject = 'Restablecer Contraseña'
+                message = 'Sigue este enlace para restablecer tu contraseña: http://yourwebsite.com/reset/{}/{}'.format(user.id, user.password)
+                sender = 'your_email@example.com'
+                recipient = [email]
+                send_mail(subject, message, sender, recipient)
+                messages.success(request, 'Se ha enviado un correo electrónico con instrucciones para restablecer tu contraseña.')
+                return redirect('login')
+            else:
+                messages.error(request, 'No hay una cuenta asociada a este correo electrónico.')
+        else:
+            messages.error(request, 'Por favor, proporciona tu dirección de correo electrónico.')
+
+    return render(request, 'forgot_password.html')
+
 
 #endregion
