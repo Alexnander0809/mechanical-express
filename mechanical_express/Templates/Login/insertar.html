@@ -42,7 +42,12 @@
     <div class="container">
         <div class="card">
             <div class="card-body">
-                <form method="POST">
+                <form method="POST" id="insertarForm">
+                    {% if mensaje %}
+                    <div id="alerta" class="alert alert-danger" role="alert">
+                        {{ mensaje }}
+                    </div>
+                {% endif %}
                     <h2 class="text-center mb-4">Insertar Usuario</h2>
                     {% csrf_token %}
                     <div class="form-group">
@@ -75,8 +80,8 @@
                     <!-- Campos adicionales para el perfil de mecánico -->
                     <div id="mecanico_fields" style="display: none;">
                         <div class="form-group">
-                            <label for="especialidad">Especialidad:</label>
-                            <select class="form-control" id="especialidad" name="especialidad">
+                            <label for="profesion">Profesion de mecanica:</label>
+                            <select class="form-control" id="profesion" name="profesion">
                                 <option value="Mecánico automotriz">Mecánico automotriz</option>
                                 <option value="Mecánico de sistemas de motor">Mecánico de sistemas de motor</option>
                                 <option value="Mecánico de sistemas de transmisión">Mecánico de sistemas de transmisión</option>
@@ -90,8 +95,19 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="termsCheck" required>
+                        <label class="form-check-label" for="termsCheck">Acepto los <a href="#">Términos y Condiciones</a></label>
+                    </div>
                     <button type="submit" class="btn btn-primary btn-block">Insertar</button>
                 </form>
+                <!-- Alerta de correo electrónico existente -->
+                
+                <!-- Botones adicionales -->
+                <div class="text-center mt-3">
+                    <a href="{% url 'login' %}" class="btn btn-secondary mr-2">Ir a Login</a>
+                    <a href="{% url 'principal' %}" class="btn btn-secondary">Vista Principal</a>
+                </div>
             </div>
         </div>
     </div>
@@ -103,6 +119,17 @@
                 document.getElementById('mecanico_fields').style.display = 'block';
             } else {
                 document.getElementById('mecanico_fields').style.display = 'none';
+            }
+        });
+
+        // Función para verificar el correo electrónico antes de enviar el formulario
+        document.getElementById('insertarForm').addEventListener('submit', function(event) {
+            var email = document.getElementById('email').value;
+            // Aquí debes realizar la verificación del correo electrónico en el servidor
+            // Si el correo ya existe, muestra la alerta
+            if (email === 'correoexistente@example.com') {
+                event.preventDefault(); // Evita que el formulario se envíe
+                document.getElementById('alerta').style.display = 'block'; // Muestra la alerta
             }
         });
     </script>

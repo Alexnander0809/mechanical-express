@@ -23,10 +23,12 @@ class Mecanico(models.Model):
     num_likes = models.CharField(max_length=11)
     tipo_afiliacion = models.CharField(max_length=150)
     tipo_servicio = models.CharField(max_length=30)
-    certificados = models.CharField(max_length=300)
+    profesion = models.CharField(max_length=300)
     estado = models.CharField(max_length=20)
     class Meta:
         db_table = "mecanico"
+
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

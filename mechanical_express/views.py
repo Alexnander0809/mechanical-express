@@ -1,44 +1,31 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Mecanico, Usuario
-
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Mecanico, Usuario
 from django.core.mail import send_mail
 from django.contrib.auth import login, authenticate, logout
 
-#region principal
-
 def principal(request):
-    return render(request, "Home/principal.html")
+    mensaje = "¡Bienvenido! Si eres mecánico, puedes actualizar tus datos personales en tu perfil."
+    return render(request, "Home/principal.html", {'mensaje':mensaje})
 
 def solicitar_servicio(request):
     mecanico = Mecanico.objects.filter(estado='Activo')
-    return render(request, "Home/solicitar_servicio.html", {
-        'mecanico':mecanico
-        }
-    )
+    return render(request, "Home/solicitar_servicio.html", {'mecanico': mecanico})
 
 def contactenos(request):
     return render(request, "Home/contactenos.html")
 
 def perfiles(request, id):
     mecanico = Mecanico.objects.filter(id=id)
-    
-    return render(request, "Home/perfiles.html", {
-        'mecanico':mecanico
-        })
-    
+    return render(request, "Home/perfiles.html", {'mecanico': mecanico})
+
 def miperfil(request):
-    
     return render(request, "Home/miperfil.html")
 
 def configuracion(request):
     return render(request, "Home/configuracion.html")
 
-#endregion
-
-#region usuario
 
 def insertarusuario(request):
     if request.method == "POST":
@@ -49,14 +36,11 @@ def insertarusuario(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
 
-        # Verificar si el correo electrónico ya está en uso
         if User.objects.filter(email=email).exists():
             messages.error(request, "El correo electrónico ya está en uso.")
-            return render(request, 'Login/insertar.html')
+            return render(request, 'Login/insertar.html', {'mensaje': "El correo electrónico ya está en uso."})
 
-        # Verificar que todos los campos requeridos estén presentes
         if role and nombres and apellidos and password and email:
-            # Crear un usuario regular
             usuario = User.objects.create_user(
                 username=email,
                 email=email,
@@ -64,12 +48,9 @@ def insertarusuario(request):
                 first_name=nombres,
                 last_name=apellidos
             )
-
-            # Guardar el usuario en la base de datos
             usuario.save()
 
-            # Crear un perfil de usuario
-            usuario_db = Usuario.objects.create(
+            Usuario.objects.create(
                 nombres=nombres,
                 apellidos=apellidos,
                 telefono=telefono,
@@ -78,55 +59,46 @@ def insertarusuario(request):
             )
 
             if role == "mecanico":
-                # Si el rol es mecánico, crear un perfil de mecánico
-                foto = request.POST.get("foto")
                 direccion = request.POST.get("direccion")
                 ubicacion = request.POST.get("ubicacion")
                 descripcion = request.POST.get("descripcion")
                 num_likes = request.POST.get("num_likes")
                 tipo_afiliacion = request.POST.get("tipo_afiliacion")
                 tipo_servicio = request.POST.get("tipo_servicio")
-                certificados = request.POST.get("certificados")
+                profesion = request.POST.get("profesion")
                 estado = request.POST.get("estado")
-                
-                mecanico = Mecanico.objects.create(
-                    foto=foto,
+
+                Mecanico.objects.create(
                     nombres=nombres,
                     apellidos=apellidos,
                     telefono=telefono,
                     email=email,
                     contraseña=password,
-                    direccion=direccion,
-                    ubicacion=ubicacion,
-                    descripcion=descripcion,
-                    num_likes=num_likes,
-                    tipo_afiliacion=tipo_afiliacion,
-                    tipo_servicio=tipo_servicio,
-                    certificados=certificados,
-                    estado=estado
+                    profesion=profesion,
+                    estado='Activo'
                 )
 
-            # Redirigir al usuario a la página de inicio de sesión
-            return redirect('/Login/login')
+                # Verificar si el usuario es un mecánico y mostrar mensaje de alerta
+                # messages.info(request, "Logeate para seguir actualizando tu información profesional")
 
-    # Si la solicitud no es POST, renderiza el formulario nuevamente
+            return redirect('/Login/login', {'mensaje':"Logeate para continuar con tu informacion profesional"})
+
     return render(request, 'Login/insertar.html')
 
-    
 def loginusuario(request):
-    if request.method=="POST":
-        if request.POST.get("username") and request.POST.get("password"):
-            usuario = authenticate(username=request.POST.get("username"), password=request.POST.get("password"))
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        if username and password:
+            usuario = authenticate(username=username, password=password)
             if usuario is not None:
                 login(request, usuario)
+                messages.success(request, "¡Bienvenido! Si eres mecánico, puedes actualizar tus datos personales en tu perfil.")
                 return redirect('/')
             else:
                 mensaje = "Usuario o Contraseña incorrectos, intente de nuevo"
-                return render(request, 'Login/login.html', {
-                    'mensaje':mensaje
-                })
-    
-    return render(request, 'Login/login.html') 
+                return render(request, 'Login/login.html', {'mensaje': mensaje})
+    return render(request, 'Login/login.html')
 
 def logoutusuario(request):
     logout(request)
@@ -150,7 +122,4 @@ def forgot_password(request):
         else:
             messages.error(request, 'Por favor, proporciona tu dirección de correo electrónico.')
 
-    return render(request, 'forgot_password.html')
-
-
-#endregion
+    return render(request, 'Login/olvidaste_contraseña.html')
