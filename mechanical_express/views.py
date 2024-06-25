@@ -44,7 +44,7 @@ def miperfil(request, idmecanico):
                 foto=foto,
                 username=email,
                 nombres=nombres,
-                apellidos=apellidos,
+                last_name=apellidos,
                 telefono=telefono,
                 email=email,
                 direccion=direccion,
