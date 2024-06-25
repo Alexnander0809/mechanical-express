@@ -22,7 +22,6 @@ class Mecanico(models.Model):
     descripcion = models.CharField(max_length=300)
     num_likes = models.CharField(max_length=11)
     tipo_afiliacion = models.CharField(max_length=150)
-    tipo_servicio = models.CharField(max_length=30)
     profesion = models.CharField(max_length=300)
     estado = models.CharField(max_length=20)
     class Meta:
