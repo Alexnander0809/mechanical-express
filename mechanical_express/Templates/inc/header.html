@@ -11,15 +11,79 @@
 
     <!-- Bootstrap CSS -->
     <title>Document</title>
+    <style>
+        /* Estilos personalizados */
+        .navbar-custom {
+            background-color: #162E44;
+            /* Color de fondo personalizado */
+            height: 100px;
+            /* Aumentar altura del navbar */
+            padding-top: 20px;
+            /* Aumentar padding superior */
+            padding-bottom: 20px;
+            /* Aumentar padding inferior */
+        }
+
+        .navbar-custom .navbar-brand {
+            color: #ffffff;
+            /* Color de texto personalizado */
+            font-size: 24px;
+            /* Aumentar tamaño del texto */
+            display: flex;
+            /* Para centrar verticalmente */
+            align-items: center;
+            /* Para centrar verticalmente */
+            justify-content: center;
+            /* Para centrar horizontalmente */
+            font-family: 'Arial', sans-serif;
+            /* Cambiar la fuente */
+        }
+
+        .navbar-custom .navbar-nav .nav-link {
+            color: #ffffff !important;
+            /* Color de texto personalizado */
+            font-size: 18px;
+            /* Aumentar tamaño del texto */
+            font-family: 'Arial', sans-serif;
+            /* Cambiar la fuente */
+        }
+
+        .navbar-custom .btn-custom {
+            background-color: transparent;
+            /* Botón transparente */
+            border: 2px solid #ffffff;
+            /* Borde blanco */
+            color: #ffffff;
+            /* Texto blanco */
+            font-family: 'Arial', sans-serif;
+            /* Cambiar la fuente */
+        }
+
+        .navbar-custom .btn-custom:hover {
+            background-color: #ffffff;
+            /* Color de fondo al pasar el mouse */
+            color: #162E44;
+            /* Texto blanco */
+        }
+
+        /* Ajuste para ocupar todo el ancho */
+        .navbar-custom .container-fluid {
+            padding-right: 0;
+            padding-left: 0;
+        }
+
+        /* Alinear enlaces del dropdown al centro */
+        .dropdown-menu {
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container">
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg navbar-custom w-100">
+        <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="{% static 'img/bootstrap-logo.svg' %}" alt="Logo" width="30" height="24"
-                    class="d-inline-block align-text-top">
-                Bootstrap
+                <img src="{% static 'img/logo.png' %}" alt="Logo" style="margin-left: 20px; filter: brightness(200%);" width="70px" height="60px" class="d-inline-block align-text-top">
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
@@ -29,21 +93,22 @@
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'principal' %}">INICIO</a>
+                        <a class="nav-link active text-center" aria-current="page"
+                            href="{% url 'principal' %}">INICIO</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'solicitar_servicio' %}">SOLICITAR SERVICIO</a>
+                        <a class="nav-link text-center" href="{% url 'solicitar_servicio' %}">SOLICITAR SERVICIO</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'contactenos' %}">CONTACTANOS</a>
+                        <a class="nav-link text-center" href="{% url 'contactenos' %}">CONTACTANOS</a>
                     </li>
                 </ul>
             </div>
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}
                 <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-custom dropdown-toggle text-center" type="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false" style="margin-right: 50px;">
                         Bienvenido
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -55,16 +120,16 @@
 
                 </div>
                 {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Acceder</a>
+                <li class="nav-item" style="margin-right: 10px;">
+                    <a class="nav-link text-center btn btn-custom" href="{% url 'login' %}">Acceder</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'registro' %}">Registrarme</a>
+                <li class="nav-item" style="margin-right: 50px;">
+                    <a class="nav-link text-center btn btn-custom" href="{% url 'registro' %}">Registrarme</a>
                 </li>
                 {% endif %}
             </ul>
-        </nav>
-    </div>
+        </div>
+    </nav>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"

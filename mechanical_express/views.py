@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .models import Mecanico, Usuario
+from .models import Mecanico, Usuario,  Profile, create_profile_for_user
 from django.core.mail import send_mail
 from django.contrib.auth import login, authenticate, logout
 
@@ -25,6 +25,7 @@ def miperfil(request):
 def configuracion(request):
     return render(request, "Home/configuracion.html")
 
+
 def insertarusuario(request):
     if request.method == "POST":
         role = request.POST.get("role")
@@ -46,41 +47,19 @@ def insertarusuario(request):
                 first_name=nombres,
                 last_name=apellidos
             )
-            usuario.save()
 
-            Usuario.objects.create(
-                nombres=nombres,
-                apellidos=apellidos,
-                telefono=telefono,
-                email=email,
-                contraseña=password
-            )
-
+            # Crear perfil de usuario en tu aplicación
+            profile = create_profile_for_user(usuario, role)
+            
             if role == "mecanico":
-                direccion = request.POST.get("direccion")
-                ubicacion = request.POST.get("ubicacion")
-                descripcion = request.POST.get("descripcion")
-                num_likes = request.POST.get("num_likes")
-                tipo_afiliacion = request.POST.get("tipo_afiliacion")
-                profesion = request.POST.get("profesion")
-                estado = request.POST.get("estado")
+                messages.info(request, "¡Tu cuenta de mecánico ha sido creada! Por favor, inicia sesión para continuar con tu información profesional.")
+            else:
+                messages.success(request, "¡Tu cuenta ha sido creada! Por favor, inicia sesión.")
 
-                Mecanico.objects.create(
-                    nombres=nombres,
-                    apellidos=apellidos,
-                    telefono=telefono,
-                    email=email,
-                    contraseña=password,
-                    profesion=profesion,
-                    estado='Activo'
-                )
-
-                # Verificar si el usuario es un mecánico y mostrar mensaje de alerta
-                # messages.info(request, "Logeate para seguir actualizando tu información profesional")
-
-            return redirect('/Login/login', {'mensaje':"Logeate para continuar con tu informacion profesional"})
+            return redirect('/Login/login')
 
     return render(request, 'Login/insertar.html')
+
 
 def loginusuario(request):
     if request.method == "POST":
