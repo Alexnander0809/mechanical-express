@@ -29,7 +29,7 @@
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">INICIO</a>
+                        <a class="nav-link active" aria-current="page" href="{% url 'principal' %}">INICIO</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'solicitar_servicio' %}">SOLICITAR SERVICIO</a>
@@ -49,9 +49,10 @@
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
                         <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configuración</a></li>
-                        <li><a class="dropdown-item" href="{% url 'salir' %}"><i class="bi bi-box-arrow-right me-2"></i>Salir</a></li>
+                        <li><a class="dropdown-item" href="{% url 'salir' %}"><i
+                                    class="bi bi-box-arrow-right me-2"></i>Salir</a></li>
                     </ul>
-                    
+
                 </div>
                 {% else %}
                 <li class="nav-item">
@@ -65,15 +66,14 @@
         </nav>
     </div>
 
-    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+
 </body>
 
 </html>

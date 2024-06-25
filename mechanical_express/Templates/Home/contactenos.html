@@ -198,14 +198,6 @@
     </div>
   </section>
 <style>
-    /* General styles */
-body {
-  font-family: Arial, sans-serif;
-  line-height: 1.6;
-  background-color: #f4f4f4;
-  margin: 0;
-  padding: 0;
-}
 
 .section {
   padding: 20px 0;
@@ -287,8 +279,23 @@ body {
 
 .col-md-4 {
   flex: 0 0 33.33333%;
-  max-width
+  max-width: 33.33333%;
+  padding-right: 7px;
+  padding-left: 7px;
+}
 
+.col-12 {
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .col-md-4 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
 </style>  
 </body>
 </html>

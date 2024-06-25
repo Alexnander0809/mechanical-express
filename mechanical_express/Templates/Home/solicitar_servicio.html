@@ -15,7 +15,7 @@
                     <p class="card-text text-center">{{ mecanico.descripcion }}</p>
                     <p class="card-text text-center"><b>Teléfono:</b> {{ mecanico.telefono }}</p>
                     <div class="text-center">
-                        <a href="{% url 'perfiles' %}" class="btn btn-primary">Ver perfil</a>
+                        <a href="{% url 'perfiles' mecanico.id %}" class="btn btn-primary">Ver perfil</a>
                     </div>
                 </div>
             </div>

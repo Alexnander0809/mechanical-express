@@ -6,8 +6,7 @@ from django.core.mail import send_mail
 from django.contrib.auth import login, authenticate, logout
 
 def principal(request):
-    mensaje = "¡Bienvenido! Si eres mecánico, puedes actualizar tus datos personales en tu perfil."
-    return render(request, "Home/principal.html", {'mensaje':mensaje})
+    return render(request, "Home/principal.html")
 
 def solicitar_servicio(request):
     mecanico = Mecanico.objects.filter(estado='Activo')
@@ -25,7 +24,6 @@ def miperfil(request):
 
 def configuracion(request):
     return render(request, "Home/configuracion.html")
-
 
 def insertarusuario(request):
     if request.method == "POST":
