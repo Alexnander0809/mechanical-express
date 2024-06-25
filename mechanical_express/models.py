@@ -12,6 +12,7 @@ class Usuario(models.Model):
         db_table = "usuario"
 
 class Mecanico(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     foto = models.CharField(max_length=150)
     nombres = models.CharField(max_length=150)
     apellidos = models.CharField(max_length=150)

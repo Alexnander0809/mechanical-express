@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from .models import Mecanico, Usuario
 from django.core.mail import send_mail
 from django.contrib.auth import login, authenticate, logout
+from django.shortcuts import get_object_or_404
 
 def principal(request):
     return render(request, "Home/principal.html")
@@ -20,7 +21,7 @@ def perfiles(request, id):
     return render(request, "Home/perfiles.html", {'mecanico': mecanico})
 
 def miperfil(request, idmecanico):
-    mec = Mecanico.objects.filter(id=idmecanico)
+    mec = get_object_or_404(Mecanico, id=idmecanico)
 
     if request.method == 'POST':
         foto = request.POST.get("foto")
@@ -54,13 +55,12 @@ def miperfil(request, idmecanico):
             )
 
         
-        return redirect('/Usuarios/miperfil/', {'mecanico': mecanico})
+        return redirect('/Usuarios/miperfil/', {'mecanico': mecanico, 'usuario':usuario })
 
     return render(request, "Usuarios/miperfil.html", {'mec': mec})
 
 def configuracion(request):
     return render(request, "Usuarios/configuracion.html")
-
 
 def insertarusuario(request):
     if request.method == "POST":
@@ -75,7 +75,7 @@ def insertarusuario(request):
         if User.objects.filter(email=email).exists():
             messages.error(request, "El correo electrónico ya está en uso.")
             return render(request, 'Login/insertar.html', {'mensaje': "El correo electrónico ya está en uso."})
-
+        
         if role and nombres and apellidos and password and email:
             usuario = User.objects.create_user(
                 username=email,
@@ -86,23 +86,25 @@ def insertarusuario(request):
             )
 
             if role == "mecanico":
-                # Crear registro en la tabla Mecanico
-                Mecanico.objects.create(
+                # Crear registro en la tabla Mecanico y establecer la clave foránea user_id
+                mecanico = Mecanico.objects.create(
+                    user_id=usuario.id,  # Asignar el id del usuario recién creado como user_id en Mecanico
                     nombres=nombres,
                     apellidos=apellidos,
                     telefono=telefono,
                     email=email,
                     contraseña=password,  # Asegúrate de que la contraseña esté cifrada si es necesario
                     profesion=profesion,
-                    estado='activo'  # Valor inicial, ajusta si es necesario
+                    estado='Activo'  # Valor inicial, ajusta si es necesario
                 )
                 messages.info(request, "¡Tu cuenta de mecánico ha sido creada! Por favor, inicia sesión para continuar con tu información profesional.")
             else:
                 messages.success(request, "¡Tu cuenta ha sido creada! Por favor, inicia sesión.")
 
             return redirect('/Login/login')
-
+    
     return render(request, 'Login/insertar.html')
+
 
 def loginusuario(request):
     if request.method == "POST":

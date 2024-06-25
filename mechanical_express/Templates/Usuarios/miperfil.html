@@ -13,6 +13,8 @@
                         {% for m in mec %}
                         <div class="row">
                             <div class="col-md-4 text-center">
+                                {{ mec }}
+
                                 <img src="{% static 'img/' %}{{ m.foto }}" class="img-fluid rounded-circle mecanico-img" alt="{{ m.nombres }}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; margin: 20px auto;">
                                 <input type="file" name="foto" class="form-control-file">
                             </div>
