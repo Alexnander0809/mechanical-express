@@ -64,7 +64,6 @@ def insertarusuario(request):
                 descripcion = request.POST.get("descripcion")
                 num_likes = request.POST.get("num_likes")
                 tipo_afiliacion = request.POST.get("tipo_afiliacion")
-                tipo_servicio = request.POST.get("tipo_servicio")
                 profesion = request.POST.get("profesion")
                 estado = request.POST.get("estado")
 

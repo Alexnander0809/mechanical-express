@@ -2,17 +2,21 @@
 {% load static %}
 
 {% block content %}
-<div class="container">
+<div class="container py-5">
+    <h2 class="text-center mb-4">Nuestros Mecánicos Disponibles</h2>
     <div class="row">
         {% for mecanico in mecanico %}
-        <div class="col-md-4">
-            <div class="card mb-4 shadow-sm">
-                <img src="{% static 'img/{{ mecanico.foto }}' %}" class="card-img-top" alt="{{ mecanico.nombres }}">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-lg h-100">
+                <img src="{% static 'img/' %}{{ mecanico.foto }}" class="card-img-top img-fluid" alt="{{ mecanico.nombres }}">
                 <div class="card-body">
-                    <h5 class="card-title">{{ mecanico.nombres }} {{ mecanico.apellidos }}</h5>
-                    <p class="card-text">Profesión: {{ mecanico.profesion }}</p>
-                    <p class="card-text">Teléfono: {{ mecanico.telefono }}</p>
-                    <a href="#" class="btn btn-primary">Solicitar Servicio</a>
+                    <h5 class="card-title text-center">{{ mecanico.nombres }} {{ mecanico.apellidos }}</h5>
+                    <p class="card-text text-center">{{ mecanico.profesion }}</p>
+                    <p class="card-text text-center">{{ mecanico.descripcion }}</p>
+                    <p class="card-text text-center"><b>Teléfono:</b> {{ mecanico.telefono }}</p>
+                    <div class="text-center">
+                        <a href="{% url 'perfiles' %}" class="btn btn-primary">Ver perfil</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -20,3 +24,5 @@
     </div>
 </div>
 {% endblock %}
+
+{% include 'inc/footer.html' %}
