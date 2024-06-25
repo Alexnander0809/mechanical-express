@@ -7,6 +7,7 @@ class Usuario(models.Model):
     telefono = models.CharField(max_length=20)
     email = models.CharField(max_length=150)
     contraseña = models.CharField(max_length=30)
+
     class Meta:
         db_table = "usuario"
 
@@ -24,14 +25,26 @@ class Mecanico(models.Model):
     tipo_afiliacion = models.CharField(max_length=150)
     profesion = models.CharField(max_length=300)
     estado = models.CharField(max_length=20)
+
     class Meta:
         db_table = "mecanico"
 
-
-
 class Profile(models.Model):
+    USER_TYPE_CHOICES = [
+        ('usuario', 'Usuario'),
+        ('mecanico', 'Mecanico'),
+    ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     certificacion = models.CharField(max_length=255, blank=True, null=True)
+    tipo_usuario = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='usuario')
 
     def __str__(self):
         return self.user.username
+
+# Función para crear un perfil para un usuario
+def create_profile_for_user(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+# Conectar la señal post_save al modelo User
+models.signals.post_save.connect(create_profile_for_user, sender=User)
