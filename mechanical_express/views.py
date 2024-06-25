@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .models import Mecanico, Usuario,  Profile, create_profile_for_user
+from .models import Mecanico, Usuario
 from django.core.mail import send_mail
 from django.contrib.auth import login, authenticate, logout
 
@@ -19,11 +19,47 @@ def perfiles(request, id):
     mecanico = Mecanico.objects.filter(id=id)
     return render(request, "Home/perfiles.html", {'mecanico': mecanico})
 
-def miperfil(request):
-    return render(request, "Home/miperfil.html")
+def miperfil(request, idmecanico):
+    mec = Mecanico.objects.filter(id=idmecanico)
+
+    if request.method == 'POST':
+        foto = request.POST.get("foto")
+        nombres = request.POST.get("nombres")
+        apellidos = request.POST.get("apellidos")
+        telefono = request.POST.get("telefono")
+        email = request.POST.get("email")
+        direccion = request.POST.get('direccion')
+        ubicacion = request.POST.get('ubicacion')
+        descripcion = request.POST.get('descripcion')
+        profesion = request.POST.get("profesion")
+
+        usuario = User.objects.create_user(
+                username=email,
+                email=email,
+                first_name=nombres,
+                last_name=apellidos
+            )
+        
+        mecanico = Mecanico.objects.create(
+                foto=foto,
+                username=email,
+                nombres=nombres,
+                apellidos=apellidos,
+                telefono=telefono,
+                email=email,
+                direccion=direccion,
+                ubicacion=ubicacion,
+                descripcion=descripcion,
+                profesion=profesion
+            )
+
+        
+        return redirect('/Usuarios/miperfil/', {'mecanico': mecanico})
+
+    return render(request, "Usuarios/miperfil.html", {'mec': mec})
 
 def configuracion(request):
-    return render(request, "Home/configuracion.html")
+    return render(request, "Usuarios/configuracion.html")
 
 
 def insertarusuario(request):
@@ -34,6 +70,7 @@ def insertarusuario(request):
         telefono = request.POST.get("telefono")
         email = request.POST.get("email")
         password = request.POST.get("password")
+        profesion = request.POST.get("profesion") if role == "mecanico" else None  # Obtener la profesión del mecánico si el rol es mecánico
 
         if User.objects.filter(email=email).exists():
             messages.error(request, "El correo electrónico ya está en uso.")
@@ -48,10 +85,17 @@ def insertarusuario(request):
                 last_name=apellidos
             )
 
-            # Crear perfil de usuario en tu aplicación
-            profile = create_profile_for_user(usuario, role)
-            
             if role == "mecanico":
+                # Crear registro en la tabla Mecanico
+                Mecanico.objects.create(
+                    nombres=nombres,
+                    apellidos=apellidos,
+                    telefono=telefono,
+                    email=email,
+                    contraseña=password,  # Asegúrate de que la contraseña esté cifrada si es necesario
+                    profesion=profesion,
+                    estado='activo'  # Valor inicial, ajusta si es necesario
+                )
                 messages.info(request, "¡Tu cuenta de mecánico ha sido creada! Por favor, inicia sesión para continuar con tu información profesional.")
             else:
                 messages.success(request, "¡Tu cuenta ha sido creada! Por favor, inicia sesión.")
@@ -59,7 +103,6 @@ def insertarusuario(request):
             return redirect('/Login/login')
 
     return render(request, 'Login/insertar.html')
-
 
 def loginusuario(request):
     if request.method == "POST":
