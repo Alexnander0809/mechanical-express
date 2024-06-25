@@ -16,8 +16,8 @@ urlpatterns = [
     
     # Perfiles y configuración
     path('Home/perfiles/<int:id>/', perfiles, name='perfiles'),
-    path('Home/miperfil/', miperfil, name='miperfil'),
-    path('Home/configuracion/', configuracion, name='configuracion'),
+    path('Usuarios/miperfil/<int:idmecanico>', miperfil, name='miperfil'),
+    path('Usuarios/configuracion/', configuracion, name='configuracion'),
     
     # Registro, login y logout
     path('Login/insertar/', insertarusuario, name='registro'),

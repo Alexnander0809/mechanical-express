@@ -1,0 +1,68 @@
+{% include 'inc/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h4 class="text-center">Editar Perfil</h4>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% for m in mec %}
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <img src="{% static 'img/' %}{{ m.foto }}" class="img-fluid rounded-circle mecanico-img" alt="{{ m.nombres }}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; margin: 20px auto;">
+                                <input type="file" name="foto" class="form-control-file">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="nombres">Nombres:</label>
+                                    <input type="text" name="nombres" value="{{ m.nombres }}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="apellidos">Apellidos:</label>
+                                    <input type="text" name="apellidos" value="{{ m.apellidos }}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="telefono">Teléfono:</label>
+                                    <input type="tel" name="telefono" value="{{ m.telefono }}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Correo electrónico:</label>
+                                    <input type="email" name="email" value="{{ m.email }}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="direccion">Dirección:</label>
+                                    <input type="text" name="direccion" value="{{ m.direccion }}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ubicacion">Ubicación:</label>
+                                    <input type="text" name="ubicacion" value="{{ m.ubicacion }}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="descripcion">Descripción:</label>
+                                    <textarea name="descripcion" class="form-control">{{ m.descripcion }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="profesion">Profesión:</label>
+                                    <input type="text" name="profesion" value="{{ m.profesion }}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tipo_afiliacion">Tipo de afiliación:</label>
+                                    <h5>{{ m.tipo_afiliacion }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary btn-block">Guardar cambios</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% include 'inc/footer.html' %}
