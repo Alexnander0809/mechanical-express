@@ -1,0 +1,22 @@
+{% include 'inc/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        {% for mecanico in mecanico %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <img src="{% static 'img/{{ mecanico.foto }}' %}" class="card-img-top" alt="{{ mecanico.nombres }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ mecanico.nombres }} {{ mecanico.apellidos }}</h5>
+                    <p class="card-text">Profesión: {{ mecanico.profesion }}</p>
+                    <p class="card-text">Teléfono: {{ mecanico.telefono }}</p>
+                    <a href="#" class="btn btn-primary">Solicitar Servicio</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
