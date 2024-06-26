@@ -75,7 +75,10 @@
                     </div>
                     <div class="form-group">
                         <label for="password">Contraseña:</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese su contraseña" required>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese su contraseña" required minlength="8">
+                        <div class="invalid-feedback">
+                            La contraseña debe tener al menos 8 caracteres.
+                        </div>
                     </div>
                     <!-- Campos adicionales para el perfil de mecánico -->
                     <div id="mecanico_fields" style="display: none;">
@@ -105,7 +108,7 @@
                 
                 <!-- Botones adicionales -->
                 <div class="text-center mt-3">
-                    <a href="{% url 'login' %}" class="btn btn-secondary mr-2">Ir a Login</a>
+                    <a href="{% url 'login' %}" class="btn btn-secondary mr-2">Ya tienes cuenta? Ingresa aquí</a>
                     <a href="{% url 'principal' %}" class="btn btn-secondary">Vista Principal</a>
                 </div>
             </div>
@@ -122,14 +125,23 @@
             }
         });
 
-        // Función para verificar el correo electrónico antes de enviar el formulario
+        // Función para verificar el correo electrónico y la longitud de la contraseña antes de enviar el formulario
         document.getElementById('insertarForm').addEventListener('submit', function(event) {
             var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var alerta = document.getElementById('alerta');
+
+            // Verificar longitud de la contraseña
+            if (password.length < 8) {
+                event.preventDefault(); // Evita que el formulario se envíe
+                document.getElementById('password').classList.add('is-invalid');
+            }
+
             // Aquí debes realizar la verificación del correo electrónico en el servidor
             // Si el correo ya existe, muestra la alerta
             if (email === 'correoexistente@example.com') {
                 event.preventDefault(); // Evita que el formulario se envíe
-                document.getElementById('alerta').style.display = 'block'; // Muestra la alerta
+                alerta.style.display = 'block'; // Muestra la alerta
             }
         });
     </script>

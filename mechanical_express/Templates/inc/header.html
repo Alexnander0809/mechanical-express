@@ -98,6 +98,7 @@
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
                         <a class="nav-link active text-center" aria-current="page" href="{% url 'principal' %}">INICIO</a>
+                        {{ usuario }}
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-center" href="{% url 'solicitar_servicio' %}">SOLICITAR SERVICIO</a>
@@ -114,7 +115,7 @@
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {% for m in mec %}
-                    <li><a class="dropdown-item" href="{% url 'miperfil' %}"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
+                        <li><a class="dropdown-item" href="/Usuarios/miperfil/{{m.id}}"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
                     {% endfor %}
                     <li><a class="dropdown-item" href="{% url 'configuracion' %}"><i class="bi bi-gear me-2"></i>Configuración</a></li>
                     <li><a class="dropdown-item" href="{% url 'salir' %}"><i class="bi bi-box-arrow-right me-2"></i>Salir</a></li>

@@ -1,8 +1,6 @@
 {% include 'inc/header.html' %}
 {% load static %}
 
-{% block content %}
-
 <style>
     .background-image {
         background-image: url('{% static "img/sliderfoto1.jpg" %}');
@@ -13,7 +11,6 @@
 </style>
 
 <div class="container-fluid mt-4 background-image">
-
     <div class="row justify-content-center">
         {% for mecanico in mecanico %}
         <div class="col-md-8">
@@ -35,7 +32,6 @@
                             </ul>
                         </div>
                     </div>
-                    <!-- Mapa de ubicación -->
                     <div class="mt-4">
                         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.7769362439466!2d-75.57389068456535!3d6.244203995471625!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e40e73bb1bd1919%3A0x269f65b6ff6d8850!2sMedellin%2C%20Antioquia!5e0!3m2!1sen!2sco!4v1624542683727!5m2!1sen!2sco" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                     </div>
@@ -45,6 +41,6 @@
         {% endfor %}
     </div>
 </div>
-{% endblock %}
+
 
 {% include 'inc/footer.html' %}

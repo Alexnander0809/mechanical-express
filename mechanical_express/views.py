@@ -21,7 +21,7 @@ def perfiles(request, id):
     return render(request, "Home/perfiles.html", {'mecanico': mecanico})
 
 def miperfil(request, idmecanico):
-    mec = get_object_or_404(Mecanico, id=idmecanico)
+    mec = Mecanico.objects.filter(id=idmecanico)
 
     if request.method == 'POST':
         foto = request.POST.get("foto")
@@ -55,7 +55,7 @@ def miperfil(request, idmecanico):
             )
 
         
-        return redirect('/Usuarios/miperfil/', {'mecanico': mecanico, 'usuario':usuario })
+        return redirect('/Usuarios/miperfil/', {'mecanico': mecanico, 'usuario':usuario, 'mec': mec })
 
     return render(request, "Usuarios/miperfil.html", {'mec': mec})
 
