@@ -14,10 +14,9 @@
   <section class="section section-sm section-first bg-default">
     <div class="container">
       <div class="row row-30 justify-content-center">
-        <div class="col-sm-8 col-md-6 col-lg-4">
+        <div class="col-sm-8 col-md-7 col-lg-4">
           <article class="box-contacts">
             <div class="box-contacts-body">
-
               <div class="box-contacts-icon fl-bigmug-line-cellphone55"></div>
               <div class="contenedor-icono">
                 <img src="{% static 'img/telefono.png' %}" class="card-img-top" alt="...">
@@ -61,7 +60,8 @@
                 <img src="{% static 'img/Correo.png' %}" class="card-img-top" alt="...">
               </div>
               <div class="box-contacts-decor"></div>
-              <p class="box-contacts-link"><a href="mailto:mail@demolink.org">Mechanical-express@gmail.com</a></p>
+              <p class="box-contacts-link"><a href="mailto:mail@demolink.org"
+                  target="_blank">mechanical-express@gmail.com</a></p>
 
             </div>
           </article>
@@ -197,28 +197,29 @@
           <div class="col-md-4">
             <div class="form-wrap">
               <label class="form-label rd-input-label" for="contact-your-name-2">Nombre completo</label>
-              <input class="form-input form-control-has-validation" id="contact-your-name-2" type="text" name="name" placeholder="Ingrese su correo"
-                required>
+              <input class="form-input form-control-has-validation" id="contact-your-name-2" type="text" name="name"
+                placeholder="Ingrese su correo" required>
             </div>
           </div>
           <div class="col-md-4">
             <div class="form-wrap">
               <label class="form-label rd-input-label" for="contact-email-2">Correo electrónico</label>
-              <input class="form-input form-control-has-validation" id="contact-email-2" type="email" name="email" placeholder="Ingrese su correo"
-                required>
+              <input class="form-input form-control-has-validation" id="contact-email-2" type="email" name="email"
+                placeholder="Ingrese su correo" required>
             </div>
           </div>
           <div class="col-md-4">
             <div class="form-wrap">
               <label class="form-label rd-input-label" for="contact-phone-2">Celular</label>
-              <input class="form-input form-control-has-validation" id="contact-phone-2" type="text" name="phone" placeholder="Ingrese su correo">
+              <input class="form-input form-control-has-validation" id="contact-phone-2" type="text" name="phone"
+                placeholder="Ingrese su correo">
             </div>
           </div>
           <div class="col-12">
             <div class="form-wrap">
               <label class="form-label rd-input-label" for="contact-message-2">Mensaje</label>
-              <textarea class="form-input textarea-lg form-control-has-validation form-control-last-child" placeholder="En que te podemos ayudar?"
-                id="contact-message-2" name="message" required></textarea>
+              <textarea class="form-input textarea-lg form-control-has-validation form-control-last-child"
+                placeholder="En que te podemos ayudar?" id="contact-message-2" name="message" required></textarea>
             </div>
           </div>
         </div>
@@ -328,5 +329,40 @@
 </body>
 
 </html>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card mb-4 shadow">
+        <h5 class="card-header bg-light">
+          <i class="fas fa-wrench fa-lg text-primary"></i> Mecánico Gratis
+        </h5>
+        <div class="card-body">
+          <p class="card-text"><i class="fas fa-book fa-lg text-muted"></i> Acceso a nuestra biblioteca de manuales de reparación de vehículos</p>
+          <p class="card-text"><i class="fas fa-users fa-lg text-muted"></i> Acceso a nuestra comunidad en línea de mecánicos para obtener ayuda y consejos</p>
+          <p class="card-text"><i class="fas fa-tag fa-lg text-muted"></i> Descuentos en herramientas y repuestos en nuestra tienda en línea</p>
+          <button class="btn btn-primary btn-block">Iniciar sesión</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card mb-4 shadow">
+        <h5 class="card-header bg-light">
+          <i class="fas fa-star fa-lg text-primary"></i> Mecánico Premium
+        </h5>
+        <div class="card-body">
+          <p class="card-text"><i class="fas fa-check fa-lg text-muted"></i> Todo lo incluido en el plan gratuito</p>
+          <p class="card-text"><i class="fas fa-database fa-lg text-muted"></i> Acceso a nuestra base de datos de diagnóstico de problemas de vehículos</p>
+          <p class="card-text"><i class="fas fa-users-cog fa-lg text-muted"></i> Asistencia prioritaria en nuestra comunidad en línea de mecánicos</p>
+          <p class="card-text"><i class="fas fa-graduation-cap fa-lg text-muted"></i> Descuentos exclusivos en cursos de capacitación en mecánica</p>
+          <p class="card-text"><i class="fas fa-truck fa-lg text-muted"></i> Acceso a nuestra red de proveedores de repuestos y herramientas</p>
+          <p class="card-text"><i class="fas fa-clock fa-lg text-muted"></i> Prioridad en la programación de citas en nuestros talleres asociados</p>
+          <button class="btn btn-primary btn-block">Suscribirse</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 {% include 'inc/footer.html' %}

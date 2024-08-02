@@ -62,6 +62,9 @@ def miperfil(request, idmecanico):
 def configuracion(request):
     return render(request, "Usuarios/configuracion.html")
 
+def planes(request):
+    return render(request, "Mecanicos/planes.html")
+
 def insertarusuario(request):
     if request.method == "POST":
         role = request.POST.get("role")
