@@ -15,70 +15,50 @@
         /* Estilos personalizados */
         .navbar-custom {
             background-color: #162E44;
-            /* Color de fondo personalizado */
             padding-top: 10px;
-            /* Ajustar el padding superior */
             padding-bottom: 10px;
-            /* Ajustar el padding inferior */
         }
 
         .navbar-custom .navbar-brand {
             color: #ffffff;
-            /* Color de texto personalizado */
             font-size: 1.5rem;
-            /* Tamaño de fuente */
             font-family: 'Arial', sans-serif;
-            /* Cambiar la fuente */
         }
 
         .navbar-custom .navbar-nav .nav-link {
             color: #ffffff !important;
-            /* Color de texto personalizado */
             font-size: 1rem;
-            /* Tamaño de fuente */
             font-family: 'Arial', sans-serif;
-            /* Cambiar la fuente */
         }
 
         .navbar-custom .btn-custom {
             background-color: transparent;
-            /* Botón transparente */
             border: 2px solid #ffffff;
-            /* Borde blanco */
             color: #ffffff;
-            /* Texto blanco */
             font-family: 'Arial', sans-serif;
-            /* Cambiar la fuente */
         }
 
         .navbar-custom .btn-custom:hover {
             background-color: #ffffff;
-            /* Color de fondo al pasar el mouse */
             color: #162E44;
-            /* Texto */
         }
 
-        /* Ajustar para ocupar todo el ancho */
         .navbar-custom .container-fluid {
             padding-right: 15px;
             padding-left: 15px;
         }
 
-        /* Alinear enlaces del dropdown al centro */
         .dropdown-menu {
             text-align: center;
         }
 
-        /* Estilos para pantallas pequeñas */
         @media (max-width: 768px) {
             .navbar-custom .navbar-brand {
                 font-size: 1.2rem;
-                /* Tamaño de fuente */
             }
 
             .navbar-custom .navbar-nav .nav-link {
                 font-size: 0.9rem;
-                /* Tamaño de fuente */
             }
         }
     </style>
@@ -88,16 +68,19 @@
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="{% static 'img/logo.png' %}" alt="Logo" style="margin-left: 10px; filter: brightness(200%);" width="50px" height="45px" class="d-inline-block align-text-top">
+                <img src="{% static 'img/logo.png' %}" alt="Logo" style="margin-left: 10px; filter: brightness(200%);"
+                    width="50px" height="45px" class="d-inline-block align-text-top">
             </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon" style="color: white !important;"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link active text-center" aria-current="page" href="{% url 'principal' %}">INICIO</a>
+                        <a class="nav-link active text-center" aria-current="page"
+                            href="{% url 'principal' %}">INICIO</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-center" href="{% url 'solicitar_servicio' %}">SOLICITAR SERVICIO</a>
@@ -109,27 +92,43 @@
             </div>
             {% if user.is_authenticated %}
             <div class="dropdown">
-                <button class="btn btn-custom dropdown-toggle text-center" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="margin-right: 10px;">
+                <button class="btn btn-custom dropdown-toggle text-center" type="button" id="dropdownMenuButton"
+                    data-bs-toggle="dropdown" aria-expanded="false" style="margin-right: 10px;">
                     Bienvenido
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    {% for m in mec %}
-                        <li><a class="dropdown-item" href="/Usuarios/miperfil/{{m.id}}"><i class="bi bi-person me-2"></i>Mi perfil</a></li>
-                    {% endfor %}
-                    <li><a class="dropdown-item" href="{% url 'configuracion' %}"><i class="bi bi-gear me-2"></i>Configuración</a></li>
-                    <li><a class="dropdown-item" href="{% url 'salir' %}"><i class="bi bi-box-arrow-right me-2"></i>Salir</a></li>
+                    {% if is_mechanic %}
+                    <li><a class="dropdown-item" href="{% url 'miperfil' id=user.id %}"><i
+                                class="bi bi-person me-2"></i>Mi
+                            perfil</a></li>
+                    <!-- Opciones adicionales solo para mecánicos -->
+                    <li><a class="dropdown-item" href="{% url 'mis_mantenimientos' %}"><i
+                                class="bi bi-wrench me-2"></i>Mis Mantenimientos</a></li>
+                    <li><a class="dropdown-item" href="{% url 'historial_mantenimientos' %}"><i
+                                class="bi bi-clock-history me-2"></i>Historial</a></li>
+                    {% endif %}
+                    <li><a class="dropdown-item" href="{% url 'configuracion' %}"><i
+                                class="bi bi-gear me-2"></i>Configuración</a></li>
+                    <li><a class="dropdown-item" href="{% url 'salir' %}"><i
+                                class="bi bi-box-arrow-right me-2"></i>Salir</a></li>
                 </ul>
             </div>
+
             {% else %}
-            <a class="nav-link text-center btn btn-custom" href="{% url 'login' %}" style="margin-right: 5px;">Acceder</a>
+            <a class="nav-link text-center btn btn-custom" href="{% url 'login' %}"
+                style="margin-right: 5px;">Acceder</a>
             <a class="nav-link text-center btn btn-custom" href="{% url 'registro' %}">Registrarme</a>
             {% endif %}
         </div>
     </nav>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 
 </body>
 
