@@ -45,7 +45,6 @@
         .form-check-label a {
             color: #000;
             font-size: 14px;
-            /* Tamaño de la letra más bajo */
         }
 
         .text-right a {
@@ -54,12 +53,10 @@
             font-size: 15px;
             color: #000;
             float: left;
-            /* Mover el enlace a la izquierda */
         }
 
         .invalid-feedback {
-            display: block;
-            /* Mostrar mensajes de error */
+            display: none;
         }
     </style>
 </head>
@@ -142,6 +139,37 @@
 
                 if (!valid) {
                     event.preventDefault(); // Evita el envío del formulario si hay errores
+                }
+            });
+
+            // Mostrar validaciones solo si se ha interactuado con el campo
+            $('#email, #password').on('blur', function () {
+                if ($(this).val() === '') {
+                    $(this).removeClass('is-invalid'); // Evitar mostrar el error si está vacío
+                } else {
+                    $(this).trigger('input'); // Forzar una validación si se ha interactuado
+                }
+            });
+
+            // Validación en tiempo real (opcional)
+            $('#email').on('input', function () {
+                var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test($(this).val())) {
+                    $(this).addClass('is-invalid');
+                    $(this).siblings('.invalid-feedback').show();
+                } else {
+                    $(this).removeClass('is-invalid');
+                    $(this).siblings('.invalid-feedback').hide();
+                }
+            });
+
+            $('#password').on('input', function () {
+                if ($(this).val().length < 8) {
+                    $(this).addClass('is-invalid');
+                    $(this).siblings('.invalid-feedback').show();
+                } else {
+                    $(this).removeClass('is-invalid');
+                    $(this).siblings('.invalid-feedback').hide();
                 }
             });
 

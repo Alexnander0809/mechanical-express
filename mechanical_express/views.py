@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import Mecanico, PerfilUsuario, Usuario
@@ -6,7 +6,6 @@ from django.core.mail import send_mail
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 
-@login_required
 def principal(request):
     # Verificar si el usuario es mecánico basado en rol_id
     is_mechanic = hasattr(request.user, 'perfilusuario') and request.user.perfilusuario.rol_id == 1
@@ -29,8 +28,10 @@ def perfiles(request, id):
 
 @login_required
 def miperfil(request):
-    # Obtener el perfil del mecánico
-    mecanico = get_object_or_404(Mecanico, user=request.user)
+    mecanico = Mecanico.objects.filter(user=request.user).first()
+    if not mecanico:
+        messages.error(request, "No se encontró el perfil del mecánico.")
+        return redirect('ruta_alternativa')  # Redirige a una página segura si no se encuentra el perfil
 
     if request.method == 'POST':
         mecanico.foto = request.POST.get("foto")
@@ -111,12 +112,16 @@ def loginusuario(request):
             if usuario is not None:
                 login(request, usuario)
                 
-                # Verificar el rol del usuario basado en rol_id
-                perfil_usuario = PerfilUsuario.objects.get(user=usuario)
-                if perfil_usuario.rol_id == 1:  # Si es mecánico
-                    return redirect('ruta_para_mecanicos')
+                # Verificar si el usuario tiene un perfil asociado
+                perfil_usuario = PerfilUsuario.objects.filter(user=usuario).first()
+                
+                if perfil_usuario:
+                    if perfil_usuario.rol_id == 1:  # Si es mecánico
+                        return redirect('ruta_para_mecanicos')
+                    else:
+                        return redirect('ruta_para_usuarios')
                 else:
-                    return redirect('ruta_para_usuarios')
+                    messages.error(request, "No se pudo determinar el rol del usuario.")
             else:
                 messages.error(request, "Usuario o contraseña incorrectos.")
     return render(request, 'Login/login.html')

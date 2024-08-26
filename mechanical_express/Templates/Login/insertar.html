@@ -15,7 +15,6 @@
             background-position: center;
             background-repeat: no-repeat;
             color: #000;
-            /* Texto en negro */
         }
 
         .container {
@@ -23,18 +22,15 @@
             justify-content: center;
             align-items: center;
             height: 110vh;
-            /* Altura total de la ventana */
         }
 
         .card {
             max-width: 500px;
             width: 100%;
-            /* Cambiado para ajustar el tamaño */
             border: none;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             background-color: rgba(255, 255, 255, 0.9);
-            /* Fondo blanco translúcido */
         }
 
         .card-body {
@@ -44,12 +40,14 @@
         .form-group label {
             font-weight: bold;
             color: #000;
-            /* Texto en negro */
         }
 
         .invalid-feedback {
-            display: block;
-            /* Mostrar mensajes de error */
+            display: none; /* Cambiado a 'none' para ocultar por defecto */
+        }
+
+        .is-invalid + .invalid-feedback {
+            display: block; /* Mostrar solo si el campo tiene la clase 'is-invalid' */
         }
     </style>
 </head>
@@ -69,8 +67,7 @@
                     <div class="form-group">
                         <label for="role">Rol:</label>
                         <select class="form-control" id="role" name="role" required>
-                            <option value="" disabled selected>Seleccione un rol</option>
-                            <option value="usuario">Usuario</option>
+                            <option value="usuario" disabled selected>Usuario</option>
                             <option value="mecanico">Mecánico</option>
                         </select>
                     </div>
@@ -107,25 +104,10 @@
                     <!-- Campos adicionales para el perfil de mecánico -->
                     <div id="mecanico_fields" style="display: none;">
                         <div class="form-group">
-                            <label for="profesion">Profesion de mecánica:</label>
+                            <label for="profesion">Profesión de mecánica:</label>
                             <select class="form-control" id="profesion" name="profesion" required>
                                 <option value="" disabled selected>Seleccione una profesión</option>
-                                <option value="Mecánico automotriz">Mecánico automotriz</option>
-                                <option value="Mecánico de sistemas de motor">Mecánico de sistemas de motor</option>
-                                <option value="Mecánico de sistemas de transmisión">Mecánico de sistemas de transmisión
-                                </option>
-                                <option value="Mecánico de sistemas de frenos">Mecánico de sistemas de frenos</option>
-                                <option value="Mecánico de sistemas de suspensión">Mecánico de sistemas de suspensión
-                                </option>
-                                <option value="Mecánico de sistemas de dirección">Mecánico de sistemas de dirección
-                                </option>
-                                <option value="Mecánico de sistemas eléctricos y electrónicos">Mecánico de sistemas
-                                    eléctricos y electrónicos</option>
-                                <option value="Mecánico de sistemas de combustible">Mecánico de sistemas de combustible
-                                </option>
-                                <option value="Mecánico de sistemas de escape">Mecánico de sistemas de escape</option>
-                                <option value="Mecánico de sistemas de refrigeración">Mecánico de sistemas de
-                                    refrigeración</option>
+                                <!-- Opciones de profesión -->
                             </select>
                             <div class="invalid-feedback">Seleccione una profesión.</div>
                         </div>
@@ -169,20 +151,20 @@
 
             // Verificar longitud de la contraseña
             if (password.length < 8) {
-                event.preventDefault(); // Evita que el formulario se envíe
+                event.preventDefault();
                 document.getElementById('password').classList.add('is-invalid');
                 document.querySelector('#password + .invalid-feedback').style.display = 'block';
                 valid = false;
             }
 
-            // Verificar correo electrónico en el frontend (esto debe ser validado también en el backend)
+            // Verificar correo electrónico en el frontend
             if (email === 'correoexistente@example.com') {
-                event.preventDefault(); // Evita que el formulario se envíe
-                alerta.style.display = 'block'; // Muestra la alerta
+                event.preventDefault();
+                alerta.style.display = 'block';
                 valid = false;
             }
 
-            // Asegúrate de que el formulario no se envíe si hay errores
+            // Asegurarse de que el formulario no se envíe si hay errores
             if (!valid) {
                 event.preventDefault();
             }
