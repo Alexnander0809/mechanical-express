@@ -1,46 +1,235 @@
 {% include 'inc/header.html' %}
 {% load static %}
 
+{% if messages %}
+    <div class="alert-container">
+        {% for message in messages %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
 <style>
+    body,
+    html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        overflow-x: hidden;
+        /* Evita el desbordamiento horizontal */
+    }
+
+    nav {
+        margin-top: 0;
+        padding-top: 0;
+    }
+
     .background-image {
-        background-image: url('{% static "img/sliderfoto1.jpg" %}');
+        background-image: url('{% static "img/slider2.jpg" %}');
         background-size: cover;
         background-position: center;
-        height: 100vh;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mecanico-img {
+        width: 300px;
+        height: 200px;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 90vw;
+        margin: 0 auto;
+        padding: 20px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        background: white;
+    }
+
+    .card-body {
+        padding: 0px;
+    }
+
+    .list-group-item {
+        padding: 15px;
+    }
+
+    .container-fluid {
+        padding: 0;
+    }
+
+    .action-buttons {
+        display: flex;
+        /* Cambiar a flexbox para alinear los botones en una fila */
+        gap: 10px;
+        /* Espacio entre los botones */
+        margin-top: 15px;
+        justify-content: center;
+        /* Centrar los botones si es necesario */
+    }
+
+    .btn-like,
+    .btn-report {
+        width: 120px;
+        margin: 5px;
+        font-size: 14px;
+    }
+
+    .btn-like {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .btn-report {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .form-report {
+        display: none;
+        /* Ocultar el formulario por defecto */
+    }
+
+    .form-report.show {
+        display: block;
+        /* Mostrar el formulario cuando se le añada la clase 'show' */
+    }
+
+    .alert-container {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1000;
+    }
+
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+
+    .alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+    }
+
+    @media (max-width: 768px) {
+        .card {
+            max-width: 95vw;
+            margin: 0;
+        }
     }
 </style>
 
-<div class="container-fluid mt-4 background-image">
+<div class="container-fluid background-image">
     <div class="row justify-content-center">
-        {% for mecanico in mecanico %}
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card shadow-lg">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4 text-center">
-                            <img src="{% static 'img/' %}{{ mecanico.foto }}" class="img-fluid rounded-circle mecanico-img" alt="{{ mecanico.nombres }}">
-                            <h5 class="text-uppercase">{{ mecanico.nombres }} {{ mecanico.apellidos }}</h5>
+                            <img src="{% static 'img/' %}{{ mecanico.foto }}"
+                                class="img-fluid rounded-circle mecanico-img"
+                                alt="{{ user.first_name }} {{ user.last_name }}">
+                            <h5 class="text-uppercase">{{ user.first_name }} {{ user.last_name }}</h5>
                             <p class="text-muted">{{ mecanico.profesion }}</p>
+                            <div class="action-buttons">
+                                <form action="{% url 'like_mecanico' mecanico.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-like">👍 {{ mecanico.num_likes }}</button>
+                                </form>
+                                
+                                <button class="btn btn-report" id="reportButton">🚫 Denunciar</button>
+                            </div>
+                            
                         </div>
                         <div class="col-md-8">
                             <ul class="list-group list-group-flush">
-                                <li class="list-group-item"><strong>Teléfono:</strong> {{ mecanico.telefono }}</li>
-                                <li class="list-group-item"><strong>Correo electrónico:</strong> {{ mecanico.email }}</li>
+                                <li class="list-group-item">
+                                    <strong>
+                                        Teléfono:
+                                        <a href="https://wa.me/{{ mecanico.telefono }}" target="_blank">
+                                            <img src="{% static 'img/whatsapp.png' %}" width="30px" height="30px" alt="WhatsApp">
+                                        </a>
+                                    </strong>
+                                    {{ mecanico.telefono }}
+                                </li>
+                                <li class="list-group-item"><strong>Correo electrónico:</strong> {{ user.email }}</li>
                                 <li class="list-group-item"><strong>Ubicación:</strong> {{ mecanico.ubicacion }}</li>
                                 <li class="list-group-item"><strong>Descripción:</strong> {{ mecanico.descripcion }}</li>
                                 <li class="list-group-item"><strong>Tipo de afiliación:</strong> {{ mecanico.tipo_afiliacion }}</li>
                             </ul>
                         </div>
                     </div>
+
+                    <!-- Formulario para la denuncia -->
+                    <div class="form-report" id="reportForm">
+                        <form action="{% url 'report_mecanico' mecanico.id %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="mecanico_id" value="{{ mecanico.id }}">
+
+                            <div class="form-group">
+                                <label for="tipo_denuncia">Tipo de denuncia:</label>
+                                <select name="tipo_denuncia" id="tipo_denuncia" class="form-control">
+                                    <option value="Trabajo Deficiente">Trabajo Deficiente</option>
+                                    <option value="Retrasos en el Servicio">Retrasos en el Servicio</option>
+                                    <option value="Maltrato o Comportamiento Inadecuado">Maltrato o Comportamiento Inadecuado</option>
+                                    <option value="Fraude o Engaño">Fraude o Engaño</option>
+                                    <option value="Daños Adicionales">Daños Adicionales</option>
+                                    <option value="Falta de Cumplimiento con el Presupuesto">Falta de Cumplimiento con el Presupuesto</option>
+                                    <option value="Falta de Profesionalismo">Falta de Profesionalismo</option>
+                                    <option value="Servicios No Solicitados">Servicios No Solicitados</option>
+                                    <option value="Problemas con la Factura">Problemas con la Factura</option>
+                                    <option value="Falta de Documentación">Falta de Documentación</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="descripcion">Descripción:</label>
+                                <textarea name="descripcion" id="descripcion" class="form-control" rows="4"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-report">🚫 Denunciar</button>
+                        </form>
+                    </div>
+
                     <div class="mt-4">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.7769362439466!2d-75.57389068456535!3d6.244203995471625!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e40e73bb1bd1919%3A0x269f65b6ff6d8850!2sMedellin%2C%20Antioquia!5e0!3m2!1sen!2sco!4v1624542683727!5m2!1sen!2sco" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.7769362439466!2d-75.57389068456535!3d6.244203995471625!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e40e73bb1bd1919%3A0x269f65b6ff6d8850!2sMedellin%2C%20Antioquia!5e0!3m2!1sen!2sco!4v1624542683727!5m2!1sen!2sco"
+                            width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                     </div>
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
 </div>
 
+<script>
+    document.getElementById('reportButton').addEventListener('click', function() {
+        var form = document.getElementById('reportForm');
+        form.classList.toggle('show');
+    });
+
+    // Código para ocultar las alertas después de unos segundos
+    document.addEventListener('DOMContentLoaded', function() {
+        var alerts = document.querySelectorAll('.alert-container .alert');
+        alerts.forEach(function(alert) {
+            setTimeout(function() {
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.remove();
+                }, 500); // Tiempo para asegurar que el fade-out se complete
+            }, 5000); // Tiempo en milisegundos antes de ocultar (5 segundos)
+        });
+    });
+</script>
 
 {% include 'inc/footer.html' %}

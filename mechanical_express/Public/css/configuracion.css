@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300');
+
+/* Variables */
+/* Overall */
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #fff;
+  font-size: 16px;
+}
+
+a.button {
+  display: inline-block;
+  margin-top: 1em;
+  padding: 0.6em 2em;
+  border: 2px solid #000;
+  border-radius: 3px;
+}
+
+/* Sidebar */
+.sidenav-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #414141;
+  width: 20%;
+  height: 100%;
+}
+
+.sidenav {
+  font-family: "Roboto", sans-serif;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidenav .nav-item {
+  padding: 1em 2em;
+}
+
+.sidenav .nav-item:hover {
+  background-color: #f8d66a;
+}
+
+.sidenav .nav-item a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.sidenav .nav-item .glyphicon {
+  margin-right: 1em;
+}
+
+.sidenav .user-account {
+  padding: 2em;
+  background-color: #131313;
+  color: #ffffff;
+}
+
+.sidenav .user-account a {
+  color: #2196f3;
+  text-decoration: none;
+}
+
+/* Page layout */
+.dashboard-wrapper {
+  padding-left: 22%;
+  margin-top: 20px;
+  padding-right: 22px;
+}
+
+h1 {
+  font-family: "Roboto", sans-serif;
+  margin-bottom: 12px;
+}
+
+label {
+  font-family: "Roboto", sans-serif;
+  color: #f8d66a;
+  font-size: 20px;
+}
+
+.btn-send, .btn-send1 {
+  font-family: "Roboto", sans-serif;
+  font-weight: 300;
+  text-transform: uppercase;
+  margin-bottom: 60px;
+}
+
+.btn-send {
+  letter-spacing: 0.4em;
+}
+
+.btn-send1 {
+  letter-spacing: 0.7em;
+}
