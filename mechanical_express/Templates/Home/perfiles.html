@@ -2,13 +2,13 @@
 {% load static %}
 
 {% if messages %}
-    <div class="alert-container">
-        {% for message in messages %}
-            <div class="alert alert-success" role="alert">
-                {{ message }}
-            </div>
-        {% endfor %}
+<div class="alert-container">
+    {% for message in messages %}
+    <div class="alert alert-success" role="alert">
+        {{ message }}
     </div>
+    {% endfor %}
+</div>
 {% endif %}
 
 <style>
@@ -146,18 +146,25 @@
                             <img src="{% static 'img/' %}{{ mecanico.foto }}"
                                 class="img-fluid rounded-circle mecanico-img"
                                 alt="{{ user.first_name }} {{ user.last_name }}">
-                            <h5 class="text-uppercase">{{ user.first_name }} {{ user.last_name }}</h5>
+                            <h5 class="text-uppercase">{{ mecanico_user.first_name }} {{ mecanico_user.last_name }}</h5>
                             <p class="text-muted">{{ mecanico.profesion }}</p>
+
                             <div class="action-buttons">
                                 {% if not is_own_profile %}
+                                {% if current_user.is_authenticated %}
                                 <form action="{% url 'like_mecanico' mecanico.id %}" method="post">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-like">👍 {{ mecanico.num_likes }}</button>
                                 </form>
-                                
                                 <button class="btn btn-report" id="reportButton">🚫 Denunciar</button>
+                                {% else %}
+                                <div class="alert alert-warning" role="alert">
+                                    Debes iniciar sesión para poder dar like o denunciar.
+                                </div>
+                                {% endif %}
                                 {% endif %}
                             </div>
+
                         </div>
                         <div class="col-md-8">
                             <ul class="list-group list-group-flush">
@@ -165,15 +172,18 @@
                                     <strong>
                                         Teléfono:
                                         <a href="https://wa.me/{{ mecanico.telefono }}" target="_blank">
-                                            <img src="{% static 'img/whatsapp.png' %}" width="30px" height="30px" alt="WhatsApp">
+                                            <img src="{% static 'img/whatsapp.png' %}" width="30px" height="30px"
+                                                alt="WhatsApp">
                                         </a>
                                     </strong>
                                     {{ mecanico.telefono }}
                                 </li>
                                 <li class="list-group-item"><strong>Correo electrónico:</strong> {{ user.email }}</li>
                                 <li class="list-group-item"><strong>Ubicación:</strong> {{ mecanico.ubicacion }}</li>
-                                <li class="list-group-item"><strong>Descripción:</strong> {{ mecanico.descripcion }}</li>
-                                <li class="list-group-item"><strong>Tipo de afiliación:</strong> {{ mecanico.tipo_afiliacion }}</li>
+                                <li class="list-group-item"><strong>Descripción:</strong> {{ mecanico.descripcion }}
+                                </li>
+                                <li class="list-group-item"><strong>Tipo de afiliación:</strong> {{
+                                    mecanico.tipo_afiliacion }}</li>
                             </ul>
                         </div>
                     </div>
@@ -189,10 +199,12 @@
                                 <select name="tipo_denuncia" id="tipo_denuncia" class="form-control">
                                     <option value="Trabajo Deficiente">Trabajo Deficiente</option>
                                     <option value="Retrasos en el Servicio">Retrasos en el Servicio</option>
-                                    <option value="Maltrato o Comportamiento Inadecuado">Maltrato o Comportamiento Inadecuado</option>
+                                    <option value="Maltrato o Comportamiento Inadecuado">Maltrato o Comportamiento
+                                        Inadecuado</option>
                                     <option value="Fraude o Engaño">Fraude o Engaño</option>
                                     <option value="Daños Adicionales">Daños Adicionales</option>
-                                    <option value="Falta de Cumplimiento con el Presupuesto">Falta de Cumplimiento con el Presupuesto</option>
+                                    <option value="Falta de Cumplimiento con el Presupuesto">Falta de Cumplimiento con
+                                        el Presupuesto</option>
                                     <option value="Falta de Profesionalismo">Falta de Profesionalismo</option>
                                     <option value="Servicios No Solicitados">Servicios No Solicitados</option>
                                     <option value="Problemas con la Factura">Problemas con la Factura</option>
@@ -222,18 +234,18 @@
 </div>
 
 <script>
-    document.getElementById('reportButton').addEventListener('click', function() {
+    document.getElementById('reportButton').addEventListener('click', function () {
         var form = document.getElementById('reportForm');
         form.classList.toggle('show');
     });
 
     // Código para ocultar las alertas después de unos segundos
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var alerts = document.querySelectorAll('.alert-container .alert');
-        alerts.forEach(function(alert) {
-            setTimeout(function() {
+        alerts.forEach(function (alert) {
+            setTimeout(function () {
                 alert.style.opacity = '0';
-                setTimeout(function() {
+                setTimeout(function () {
                     alert.remove();
                 }, 500);
             }, 5000);

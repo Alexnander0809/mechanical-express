@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from .models import Like, Mecanico, Mantenimiento, Denuncia, Pago
 from django.contrib.auth.hashers import check_password
 import re
+from django.contrib.auth.models import AnonymousUser
 
 #region vistas principales
 
@@ -57,13 +58,16 @@ def contactenos(request):
 
 def perfiles(request, id):
     mecanico = get_object_or_404(Mecanico, id=id)
-    user = mecanico.user
-    is_authenticated = request.user.is_authenticated
-    is_own_profile = is_authenticated and request.user.id == user.id
+    mecanico_user = mecanico.user  # Usuario relacionado con el mecánico
+    current_user = request.user  # Usuario actual de la sesión
+
+    is_authenticated = current_user.is_authenticated
+    is_own_profile = is_authenticated and current_user.id == mecanico_user.id
 
     return render(request, "Home/perfiles.html", {
         'mecanico': mecanico,
-        'user': user,
+        'mecanico_user': mecanico_user,  # Cambié el nombre para evitar confusión
+        'current_user': current_user,  # Usuario de la sesión actual
         'is_own_profile': is_own_profile
     })
 
