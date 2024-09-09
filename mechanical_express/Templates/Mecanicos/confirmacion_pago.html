@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Pago</title>
+    <link rel="stylesheet" href="{% static 'css/confirmacion_pago.css' %}">
+    <link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
+    <script>
+        // Configurar la redirección automática después de 30 segundos
+        function redirectToHome() {
+            let countdown = 30; // Tiempo en segundos
+            const countdownElement = document.getElementById('countdown');
+            const redirectUrl = "{% url 'principal' %}"; // Cambia 'home' por el nombre de la URL de tu página principal
+
+            function updateCountdown() {
+                countdownElement.textContent = countdown;
+                if (countdown <= 0) {
+                    window.location.href = redirectUrl;
+                } else {
+                    countdown--;
+                    setTimeout(updateCountdown, 1000); // Actualiza cada segundo
+                }
+            }
+
+            updateCountdown();
+        }
+
+        // Ejecutar la redirección cuando la página se carga
+        document.addEventListener('DOMContentLoaded', redirectToHome);
+    </script>
+</head>
+<body>
+    <div class="confirmation-container">
+        <div class="confirmation-card">
+            <h1>{{ message }}, {{ user.first_name }}!</h1>
+            <p class="confirmation-message">{{ plan_description }}</p>
+            <p>Estamos encantados de que hayas elegido nuestro plan. Aquí te dejamos algunos de los beneficios que disfrutarás:</p>
+
+            <div class="benefits-container">
+                <h2>Beneficios del Plan:</h2>
+                <ul>
+                    {% for benefit in benefits %}
+                        <li>{{ benefit }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <p>Serás redirigido a la página principal en <span id="countdown">30</span> segundos.</p>
+            <a href="{% url 'miperfil' user.id %}" class="return-profile-button">Volver a Mi Perfil</a>
+        </div>
+    </div>
+</body>
+</html>

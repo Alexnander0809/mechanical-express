@@ -1,0 +1,89 @@
+/* pagos.css */
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.payment-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.payment-title {
+    text-align: center;
+    color: #333;
+}
+
+.payment-summary {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.payment-summary h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.payment-summary p {
+    font-size: 1.1em;
+    margin: 5px 0;
+}
+
+.payment-summary p strong {
+    color: #333;
+}
+
+.form-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.field-container {
+    margin-bottom: 15px;
+}
+
+.field-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.field-container input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.submit-button, .cancel-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+}
+
+.submit-button {
+    background-color: #4CAF50;
+}
+
+.cancel-button {
+    background-color: #f44336;
+}
+
+.submit-button:hover, .cancel-button:hover {
+    opacity: 0.9;
+}

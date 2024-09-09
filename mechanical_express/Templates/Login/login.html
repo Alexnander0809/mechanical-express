@@ -83,6 +83,14 @@
                 <label for="password">Contraseña:</label>
                 <input type="password" name="password" id="password" class="form-control" placeholder="Ingresa tu contraseña" required>
             </div>
+            <div class="form-group">
+                <label for="rol">Rol:</label>
+                <select name="rol" id="rol" class="form-control" required>
+                    <option value="mecanico">Mecánico</option>  
+                    <option value="usuario">Usuario</option>
+                </select>
+            </div>
+            
             <a href="{% url 'password_reset' %}" class="forgot-password">¿Olvidaste tu contraseña?</a>
             <!-- Enlace para el olvido de contraseña -->
 

@@ -5,28 +5,46 @@
     {% block content %}
     <div class="container py-5 content">
         <h2 class="text-center mb-4">Nuestros Mecánicos Disponibles</h2>
+
+        <!-- Filtro -->
+        <div class="text-center mb-4">
+            <a href="?filtro=todos" class="btn btn-filter {% if filtro == 'todos' %}active{% endif %}">Todos los Mecánicos</a>
+            <a href="?filtro=premium" class="btn btn-filter btn-premium {% if filtro == 'premium' %}active{% endif %}">
+                <span class="premium-star">★</span> Mecánicos Premium
+            </a>
+            <a href="?filtro=regulares" class="btn btn-filter {% if filtro == 'regulares' %}active{% endif %}">Mecánicos Regulares</a>
+        </div>
+
         <div class="row">
             {% if page_obj %}
                 {% for mecanico in page_obj %}
                 <div class="col-md-4 mb-4">
-                    <div class="card shadow-lg h-100">
-                        <img src="{% static 'img/' %}{{ mecanico.foto }}" class="card-img-top img-fluid" alt="{{ mecanico.user.username }}">
+                    <div class="card shadow-sm h-100 {% if mecanico.es_premium %}card-premium{% endif %}">
+                        <!-- Imagen circular -->
+                        <div class="mecanico-image-wrapper">
+                            <img src="{% static 'img/' %}{{ mecanico.foto }}" class="card-img-top img-fluid rounded-circle mecanico-img" alt="{{ mecanico.user.username }}" aria-label="{{ mecanico.user.first_name }} {{ mecanico.user.last_name }}">
+                            {% if mecanico.es_premium %}
+                            <span class="premium-star">★</span> <!-- Estrella para mecánicos premium -->
+                            {% endif %}
+                        </div>
                         <div class="card-body">
                             <h5 class="card-title text-center">{{ mecanico.user.first_name }} {{ mecanico.user.last_name }}</h5>
                             <p class="card-text text-center">{{ mecanico.profesion }}</p>
                             <p class="card-text text-center">{{ mecanico.descripcion }}</p>
+                            <p class="card-text text-center"><b>Ubicacion:</b> {{ mecanico.ubicacion }}</p>
                             <p class="card-text text-center"><b>Teléfono:</b> {{ mecanico.telefono }}</p>
+                            <p class="card-text text-center"><b>Tipo de Afiliación:</b> {{ mecanico.tipo_afiliacion }}</p>
                             <div class="text-center">
-                                <a href="{% url 'perfiles' mecanico.id %}" class="btn btn-primary">Ver perfil</a>
+                                <a href="{% url 'perfiles' mecanico.id %}" class="btn btn-profile">Ver perfil</a>
                             </div>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
             {% else %}
-                <div class="col-12 text-center">
-                    <p>No hay mecánicos disponibles en este momento.</p>
-                </div>
+            <div class="col-12 text-center">
+                <p>No hay mecánicos disponibles en este momento.</p>
+            </div>
             {% endif %}
         </div>
 
@@ -34,49 +52,49 @@
         <div class="d-flex justify-content-center mt-4">
             <ul class="pagination">
                 {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page=1">Primera</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
-                    </li>
+                <li class="page-item">
+                    <a class="page-link btn-pagination" href="?page=1&filtro={{ filtro }}">Primera</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link btn-pagination" href="?page={{ page_obj.previous_page_number }}&filtro={{ filtro }}">Anterior</a>
+                </li>
                 {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">Primera</span>
-                    </li>
-                    <li class="page-item disabled">
-                        <span class="page-link">Anterior</span>
-                    </li>
+                <li class="page-item disabled">
+                    <span class="page-link btn-pagination">Primera</span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link btn-pagination">Anterior</span>
+                </li>
                 {% endif %}
 
                 {% for num in page_obj.paginator.page_range %}
-                    {% if num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
-                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                        </li>
-                    {% elif num == 1 or num == page_obj.paginator.num_pages %}
-                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                        </li>
-                    {% elif num == page_obj.number|add:-3 or num == page_obj.number|add:3 %}
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                    {% endif %}
+                {% if num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    <a class="page-link btn-pagination" href="?page={{ num }}&filtro={{ filtro }}">{{ num }}</a>
+                </li>
+                {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    <a class="page-link btn-pagination" href="?page={{ num }}&filtro={{ filtro }}">{{ num }}</a>
+                </li>
+                {% elif num == page_obj.number|add:-3 or num == page_obj.number|add:3 %}
+                <li class="page-item disabled"><span class="page-link btn-pagination">...</span></li>
+                {% endif %}
                 {% endfor %}
 
                 {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Última</a>
-                    </li>
+                <li class="page-item">
+                    <a class="page-link btn-pagination" href="?page={{ page_obj.next_page_number }}&filtro={{ filtro }}">Siguiente</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link btn-pagination" href="?page={{ page_obj.paginator.num_pages }}&filtro={{ filtro }}">Última</a>
+                </li>
                 {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">Siguiente</span>
-                    </li>
-                    <li class="page-item disabled">
-                        <span class="page-link">Última</span>
-                    </li>
+                <li class="page-item disabled">
+                    <span class="page-link btn-pagination">Siguiente</span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link btn-pagination">Última</span>
+                </li>
                 {% endif %}
             </ul>
         </div>
@@ -85,3 +103,6 @@
 </div>
 
 {% include 'inc/footer.html' %}
+
+<!-- Enlace al archivo CSS -->
+<link rel="stylesheet" href="{% static 'css/solicitar_servicio.css' %}">

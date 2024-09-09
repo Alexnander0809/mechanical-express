@@ -1,0 +1,93 @@
+/* Contactenos.css */
+
+/* Estilo General */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+  }
+  
+  h3 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Sección de Contacto Principal */
+  .section-first {
+    padding: 50px 0;
+  }
+  
+  .box-contacts {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px;
+    margin: 10px;
+  }
+  
+  .box-contacts-icon {
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .contenedor-icono img {
+    width: 60px;
+    height: auto;
+    margin-bottom: 10px;
+  }
+  
+  .box-contacts-link a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .box-contacts-link a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Preguntas Frecuentes */
+  .faq {
+    margin-top: 30px;
+  }
+  
+  .faq h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .faq p {
+    margin-bottom: 20px;
+    color: #555;
+  }
+  
+  /* Mapa */
+  .map-container {
+    margin-top: 30px; /* Ajusta este valor según el espacio deseado */
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .map-container iframe {
+    border: 0;
+    border-radius: 8px;
+  }
+  
+  /* Espaciado y Alineación */
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  .col-sm-8, .col-md-6, .col-lg-4 {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  

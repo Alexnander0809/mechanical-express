@@ -1,10 +1,82 @@
 {% include 'inc/header.html' %}
 {% load static %}
 
+<!-- Agregar Leaflet CSS y JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Agregar jQuery y jQuery UI para autocompletado -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 {% block content %}
+<style>
+    body {
+        background-image: url('{% static "img/slider2.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        padding: 20px;
+        margin: 0 auto;
+    }
+
+    .card {
+        background-color: rgba(255, 255, 255, 0.9);
+        border: 2px solid #fff;
+        /* Borde añadido */
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #map {
+        border: 2px solid #000;
+        /* Borde añadido */
+        border-radius: 10px;
+    }
+
+    button[type="submit"] {
+        display: block;
+        margin: 20px auto;
+        padding: 12px 30px;
+        background-color: #007bff;
+        border-color: #007bff;
+        font-size: 16px;
+        font-weight: bold;
+        color: white;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-ver-planes {
+        background-color: #ff7f50;
+        color: white;
+        font-weight: bold;
+        padding: 8px 20px;
+        border-radius: 5px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .btn-ver-planes:hover {
+        background-color: #ff6347;
+        transform: scale(1.05);
+    }
+</style>
 <div class="container mt-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card shadow-lg">
                 <div class="card-body">
                     <h4 class="text-center">Editar Perfil</h4>
@@ -13,50 +85,65 @@
                         {% for m in mec %}
                         <div class="row">
                             <div class="col-md-4 text-center">
-                                <img src="{% static 'img/' %}{{ m.foto }}" class="img-fluid rounded-circle mecanico-img" alt="{{ m.nombres }}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; margin: 20px auto;">
-                                <input type="file" name="foto" class="form-control-file">
+                                <img src="{% if m.foto %}{% static 'img/' %}{{ m.foto }}{% else %}{% static 'img/placeholder.png' %}{% endif %}"
+                                    class="img-fluid rounded-circle mecanico-img" alt="{{ m.nombres }}"
+                                    style="width: 150px; height: 150px; object-fit: cover; margin: 20px auto;">
+                                <input type="file" name="foto" class="form-control-file mt-3">
                             </div>
                             <div class="col-md-8">
                                 <div class="form-group">
-                                    <label for="nombres">Nombres:</label>
-                                    <input type="text" name="nombres" value="{{ m.nombres }}" class="form-control">
+                                    <label for="nombres"><strong>Nombres:</strong></label>
+                                    <input type="text" name="nombres" value="{{ user.first_name }}" class="form-control"
+                                        required maxlength="100" placeholder="Ingresa tus nombres">
                                 </div>
                                 <div class="form-group">
-                                    <label for="apellidos">Apellidos:</label>
-                                    <input type="text" name="apellidos" value="{{ m.apellidos }}" class="form-control">
+                                    <label for="apellidos"><strong>Apellidos:</strong></label>
+                                    <input type="text" name="apellidos" value="{{ user.last_name }}"
+                                        class="form-control" required maxlength="100"
+                                        placeholder="Ingresa tus apellidos">
                                 </div>
                                 <div class="form-group">
-                                    <label for="telefono">Teléfono:</label>
-                                    <input type="tel" name="telefono" value="{{ m.telefono }}" class="form-control">
+                                    <label for="telefono"><strong>Teléfono:</strong></label>
+                                    <input type="tel" name="telefono" value="{{ m.telefono }}" class="form-control"
+                                        required pattern="[0-9]{10}" maxlength="10" placeholder="Ingresa tu teléfono">
                                 </div>
                                 <div class="form-group">
-                                    <label for="email">Correo electrónico:</label>
-                                    <input type="email" name="email" value="{{ m.email }}" class="form-control">
+                                    <label for="email"><strong>Correo electrónico:</strong></label>
+                                    <input type="email" value="{{ user.email }}" class="form-control" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label for="direccion">Dirección:</label>
-                                    <input type="text" name="direccion" value="{{ m.direccion }}" class="form-control">
+                                    <label for="direccion"><strong>Dirección:</strong></label>
+                                    <input type="text" name="direccion" value="{{ m.direccion }}" class="form-control"
+                                        required maxlength="150" placeholder="Ingresa tu dirección">
                                 </div>
                                 <div class="form-group">
-                                    <label for="ubicacion">Ubicación:</label>
-                                    <input type="text" name="ubicacion" value="{{ m.ubicacion }}" class="form-control">
+                                    <label for="ubicacion"><strong>Ubicación:</strong></label>
+                                    <input type="text" name="ubicacion" id="ubicacion" value="{{ m.ubicacion }}"
+                                        class="form-control" required maxlength="150"
+                                        placeholder="Ingresa tu ubicación">
                                 </div>
                                 <div class="form-group">
-                                    <label for="descripcion">Descripción:</label>
-                                    <textarea name="descripcion" class="form-control">{{ m.descripcion }}</textarea>
+                                    <label for="descripcion"><strong>Descripción:</strong></label>
+                                    <textarea name="descripcion" class="form-control" required maxlength="300"
+                                        placeholder="Describe tus habilidades y experiencia">{{ m.descripcion }}</textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="profesion">Profesión:</label>
-                                    <input type="text" name="profesion" value="{{ m.profesion }}" class="form-control">
+                                    <label for="profesion"><strong>Profesión:</strong></label>
+                                    <input type="text" name="profesion" value="{{ m.profesion }}" class="form-control"
+                                        required maxlength="300" placeholder="Ingresa tu profesión">
                                 </div>
                                 <div class="form-group">
-                                    <label for="tipo_afiliacion">Tipo de afiliación:</label>
-                                    <h5>{{ m.tipo_afiliacion }}</h5>
+                                    <label for="tipo_afiliacion"><strong>Tipo de afiliación:</strong></label>
+                                    <p>{{ m.tipo_afiliacion }}</p>
+                                    <a href="{% url 'planes' id=user.id %}"
+                                        class="btn btn-primary btn-sm btn-ver-planes">Ver planes de mecánico</a>
                                 </div>
                             </div>
                         </div>
                         {% endfor %}
-                        <button type="submit" class="btn btn-primary btn-block">Guardar cambios</button>
+                        <!-- Contenedor para el mapa -->
+                        <div id="map" style="height: 300px; margin-top: 20px;"></div>
+                        <button type="submit" class="btn btn-primary btn-block btn-center">Guardar cambios</button>
                     </form>
                 </div>
             </div>
@@ -66,3 +153,77 @@
 {% endblock %}
 
 {% include 'inc/footer.html' %}
+
+<!-- Agregar script para el mapa y el autocompletado -->
+<script>
+    // Lista de barrios de Medellín y sus coordenadas
+    var barrios = [
+        { name: "Alpujarra", coords: [6.2508, -75.5677] },
+        { name: "Aranjuez", coords: [6.2511, -75.5734] },
+        { name: "Belen Rincón", coords: [6.2114, -75.5872] },
+        { name: "Belén", coords: [6.2077, -75.5904] },
+        { name: "Buenos Aires", coords: [6.2428, -75.5724] },
+        { name: "Campo Valdés", coords: [6.2518, -75.5798] },
+        { name: "Candelaria", coords: [6.2530, -75.5698] },
+        { name: "Castilla", coords: [6.2702, -75.5648] },
+        { name: "Centro", coords: [6.2509, -75.5653] },
+        { name: "Colombia", coords: [6.2621, -75.5808] },
+        { name: "Dizque", coords: [6.2591, -75.5704] },
+        { name: "El Poblado", coords: [6.2054, -75.5758] },
+        { name: "Enciso", coords: [6.2587, -75.5823] },
+        { name: "Envigado", coords: [6.1828, -75.5736] },
+        { name: "Estadio", coords: [6.2517, -75.5702] },
+        { name: "Guadalupe", coords: [6.2281, -75.5869] },
+        { name: "Guayabal", coords: [6.2375, -75.5897] },
+        { name: "La América", coords: [6.2475, -75.5710] },
+        { name: "Laureles", coords: [6.2492, -75.5711] },
+        { name: "Laureles-Estadio", coords: [6.2503, -75.5724] },
+        { name: "Llanaditas", coords: [6.2324, -75.5735] },
+        { name: "Los Colores", coords: [6.2477, -75.5770] },
+        { name: "Los Mangos", coords: [6.2404, -75.5732] },
+        { name: "Niza", coords: [6.2368, -75.5809] },
+        { name: "Pajarito", coords: [6.2394, -75.5766] },
+        { name: "Pinal", coords: [6.2387, -75.5827] },
+        { name: "Poblado-Central", coords: [6.2057, -75.5741] },
+        { name: "Robledo", coords: [6.2813, -75.5856] },
+        { name: "San Diego", coords: [6.2490, -75.5720] },
+        { name: "San Félix", coords: [6.2112, -75.5711] },
+        { name: "San Javier", coords: [6.2485, -75.5850] },
+        { name: "San Lucas", coords: [6.2128, -75.5919] },
+        { name: "San Pedro", coords: [6.2362, -75.5767] },
+        { name: "Santa Cruz", coords: [6.2563, -75.5748] },
+        { name: "Santa Elena", coords: [6.2260, -75.5697] },
+        { name: "Villa de Aburrá", coords: [6.2361, -75.5817] },
+        { name: "Villanueva", coords: [6.2322, -75.5750] },
+        { name: "El Trapiche", coords: [6.2573, -75.5783] }
+    ];
+
+
+
+    // Inicializar el mapa
+    var map = L.map('map').setView([6.258, -75.573], 13);
+
+    // Agregar capa de mapa
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Añadir marcadores para los barrios
+    barrios.forEach(function (barrio) {
+        L.marker(barrio.coords)
+            .addTo(map)
+            .bindPopup(barrio.name)
+            .openPopup();
+    });
+
+    // Autocompletado para el campo de ubicación
+    $(function () {
+        var availableTags = barrios.map(function (barrio) {
+            return barrio.name;
+        });
+
+        $("#ubicacion").autocomplete({
+            source: availableTags
+        });
+    });
+</script>

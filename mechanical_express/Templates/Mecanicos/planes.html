@@ -1,83 +1,151 @@
+{% include 'inc/header.html' %}
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
   <style>
     body {
       background-color: #f8f9fa;
+      font-family: 'Roboto', sans-serif;
     }
+
     .card {
       border: none;
       border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s ease;
     }
+
+    .card:hover {
+      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
+    }
+
     .card-header {
       border-bottom: none;
       border-top-left-radius: 15px;
       border-top-right-radius: 15px;
+      background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+      color: #fff;
+      font-weight: 700;
     }
-    .card-header.bg-light {
-      background-color: #f1f1f1 !important;
-    }
+
     .card-body {
       background-color: #ffffff;
       border-bottom-left-radius: 15px;
       border-bottom-right-radius: 15px;
+      padding: 20px;
     }
+
     .btn-block {
       border-radius: 25px;
+      padding: 10px;
+      font-weight: 500;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      text-align: center;
     }
-    .card-shadow {
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    .btn-block:hover {
+      transform: translateY(-2px);
     }
+
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #004494;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      border-color: #6c757d;
+    }
+
+    .btn-secondary:hover {
+      background-color: #5a6268;
+      border-color: #545b62;
+    }
+
+    .btn-link {
+      color: #ffffff;
+      text-decoration: none;
+    }
+
+    .btn-link:hover {
+      color: #ffffff;
+      text-decoration: none;
+    }
+
     .fas {
       margin-right: 10px;
     }
+
     .mb-4 {
       margin-bottom: 1.5rem !important;
     }
-    .bg-primary {
-      background-color: #007bff !important;
-    }
-    .text-primary {
-      color: #007bff !important;
-    }
+
     .text-muted {
       color: #6c757d !important;
     }
+
+    .container {
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div class="row">
       <div class="col-md-6">
         <div class="card card-shadow mb-4">
-          <h5 class="card-header bg-light">
-            <i class="fas fa-wrench fa-lg text-primary"></i> Mecánico Gratis
+          <h5 class="card-header">
+            <i class="fas fa-wrench fa-lg"></i> Mecánico Gratis
           </h5>
           <div class="card-body">
-            <p class="card-text"><i class="fas fa-book fa-lg text-muted"></i> Acceso a nuestra biblioteca de manuales de reparación de vehículos</p>
-            <p class="card-text"><i class="fas fa-users fa-lg text-muted"></i> Acceso a nuestra comunidad en línea de mecánicos para obtener ayuda y consejos</p>
-            <p class="card-text"><i class="fas fa-tag fa-lg text-muted"></i> Descuentos en herramientas y repuestos en nuestra tienda en línea</p>
-            <button class="btn btn-primary btn-block">Iniciar sesión</button>
+            <p class="card-text"><i class="fas fa-calendar-alt fa-lg text-muted"></i> Listado básico de servicios con
+              tarifas estándar</p>
+            <p class="card-text"><i class="fas fa-question-circle fa-lg text-muted"></i> Soporte básico en línea</p>
+            <button class="btn btn-secondary btn-block">Plan Actual</button>
           </div>
         </div>
       </div>
       <div class="col-md-6">
         <div class="card card-shadow mb-4">
-          <h5 class="card-header bg-light">
-            <i class="fas fa-star fa-lg text-primary"></i> Mecánico Premium
+          <h5 class="card-header">
+            <i class="fas fa-star fa-lg"></i> Mecánico Premium
           </h5>
           <div class="card-body">
-            <p class="card-text"><i class="fas fa-check fa-lg text-muted"></i> Todo lo incluido en el plan gratuito</p>
-            <p class="card-text"><i class="fas fa-database fa-lg text-muted"></i> Acceso a nuestra base de datos de diagnóstico de problemas de vehículos</p>
-            <p class="card-text"><i class="fas fa-users-cog fa-lg text-muted"></i> Asistencia prioritaria en nuestra comunidad en línea de mecánicos</p>
-            <p class="card-text"><i class="fas fa-graduation-cap fa-lg text-muted"></i> Descuentos exclusivos en cursos de capacitación en mecánica</p>
-            <p class="card-text"><i class="fas fa-truck fa-lg text-muted"></i> Acceso a nuestra red de proveedores de repuestos y herramientas</p>
-            <p class="card-text"><i class="fas fa-clock fa-lg text-muted"></i> Prioridad en la programación de citas en nuestros talleres asociados</p>
-            <button class="btn btn-primary btn-block">Suscribirse</button>
+            <p class="card-text"><i class="fas fa-money-bill fa-lg text-muted"></i> Oportunidad de establecer tarifas
+              más altas para servicios</p>
+            <p class="card-text"><i class="fas fa-headset fa-lg text-muted"></i> Soporte prioritario y consultoría en
+              línea</p>
+            <p class="card-text"><i class="fas fa-award fa-lg text-muted"></i> Certificación Premium para tu perfil
+              profesional</p>
+            <p class="card-text"><i class="fas fa-star-half-alt fa-lg text-muted"></i> Beneficios adicionales como
+              formación y eventos exclusivos</p>
+            {% if mecanico %}
+            {% if mecanico.tipo_afiliacion == 'premium' %}
+            <a href="" class="btn btn-primary btn-block btn-link">Ya eres premium</a>
+            {% else %}
+            <a href="{% url 'pagos' user.id %}" class="btn btn-primary btn-block btn-link">Convertirme a premium</a>
+            {% endif %}
+            {% else %}
+            <!-- Opcionalmente maneja el caso donde no se encontró el mecánico -->
+            <p>No se encontró información del mecánico.</p>
+            {% endif %}
+
           </div>
         </div>
       </div>
@@ -87,4 +155,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
+
+{% include 'inc/footer.html' %}

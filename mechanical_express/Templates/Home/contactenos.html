@@ -7,10 +7,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact Section</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="{% static 'css/contactenos.css' %}">
 </head>
 
 <body>
+  <!-- Sección de Contacto Principal -->
   <section class="section section-sm section-first bg-default">
     <div class="container">
       <div class="row row-30 justify-content-center">
@@ -19,24 +20,10 @@
             <div class="box-contacts-body">
               <div class="box-contacts-icon fl-bigmug-line-cellphone55"></div>
               <div class="contenedor-icono">
-                <img src="{% static 'img/telefono.png' %}" class="card-img-top" alt="...">
+                <img src="{% static 'img/telefono.png' %}" class="card-img-top" alt="Telefono">
               </div>
-              <style>
-                .contenedor-icono img {
-                  width: 50px;
-                  /* Ajusta el ancho según tus necesidades */
-                  height: auto;
-                  /* Mantiene la proporción de la imagen */
-                  display: block;
-                  /* Centra la imagen dentro del contenedor */
-                  margin: 0 auto;
-                  /* Centra la imagen horizontalmente */
-                }
-              </style>
               <div class="box-contacts-decor"></div>
-
               <p class="box-contacts-link"><a href="tel:+573239134688">+57 323-913-4688</a></p>
-
             </div>
           </article>
         </div>
@@ -45,7 +32,7 @@
             <div class="box-contacts-body">
               <div class="box-contacts-icon fl-bigmug-line-up104"></div>
               <div class="contenedor-icono">
-                <img src="{% static 'img/casas.png' %}" class="card-img-top" alt="...">
+                <img src="{% static 'img/casas.png' %}" class="card-img-top" alt="Ubicación">
               </div>
               <div class="box-contacts-decor"></div>
               <p class="box-contacts-link"><a href="#">Medellín, Colombia</a></p>
@@ -57,12 +44,10 @@
             <div class="box-contacts-body">
               <div class="box-contacts-icon fl-bigmug-line-chat55"></div>
               <div class="contenedor-icono">
-                <img src="{% static 'img/Correo.png' %}" class="card-img-top" alt="...">
+                <img src="{% static 'img/Correo.png' %}" class="card-img-top" alt="Correo">
               </div>
               <div class="box-contacts-decor"></div>
-              <p class="box-contacts-link"><a href="mailto:mail@demolink.org"
-                  target="_blank">mechanical-express@gmail.com</a></p>
-
+              <p class="box-contacts-link"><a href="mailto:mail@demolink.org" target="_blank">mechanical-express@gmail.com</a></p>
             </div>
           </article>
         </div>
@@ -70,264 +55,32 @@
     </div>
   </section>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-
-    .section {
-      padding: 40px 0;
-    }
-
-    .section-sm {
-      padding: 20px 0;
-    }
-
-    .section-first {
-      background-color: #f8f8f8;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 15px;
-    }
-
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      margin: 0 -15px;
-    }
-
-    .row-30 {
-      margin-top: 30px;
-    }
-
-    .justify-content-center {
-      justify-content: center;
-    }
-
-    .col-sm-8 {
-      flex: 0 0 auto;
-      width: 66.6667%;
-    }
-
-    .col-md-6 {
-      flex: 0 0 auto;
-      width: 50%;
-    }
-
-    .col-lg-4 {
-      flex: 0 0 auto;
-      width: 33.3333%;
-    }
-
-    .box-contacts {
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 5px;
-      text-align: center;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      margin: 15px;
-    }
-
-    .box-contacts-body {
-      position: relative;
-    }
-
-    .box-contacts-icon {
-      font-size: 40px;
-      color: #6c757d;
-      margin-bottom: 10px;
-    }
-
-    .box-contacts-decor {
-      height: 3px;
-      width: 60px;
-      background-color: #6c757d;
-      margin: 10px auto;
-    }
-
-    .box-contacts-link {
-      margin: 10px 0;
-    }
-
-    .box-contacts-link a {
-      color: #007bff;
-      text-decoration: none;
-    }
-
-    .box-contacts-link a:hover {
-      text-decoration: underline;
-    }
-
-    /* Add responsive styles */
-    @media (max-width: 767.98px) {
-      .col-sm-8 {
-        width: 100%;
-      }
-    }
-
-    @media (min-width: 768px) and (max-width: 991.98px) {
-      .col-md-6 {
-        width: 100%;
-      }
-    }
-
-    @media (min-width: 992px) and (max-width: 1199.98px) {
-      .col-lg-4 {
-        width: 50%;
-      }
-    }
-  </style>
-  <hr>
-  <section class="section section-sm section-last bg-default text-left">
+  <!-- Sección de Preguntas Frecuentes -->
+  <section class="section section-sm bg-default">
     <div class="container">
-      <article class="title-classic">
-        <div class="title-classic-title">
-          <h3>Ponerse en contacto</h3>
-        </div>
-        <div class="title-classic-text">
-          <p>Si tienes alguna duda, simplemente rellena el formulario de contacto y te responderemos en breve.</p>
-        </div>
-      </article>
-      <form class="rd-form rd-form-variant-2 rd-mailform" method="post" action="../bat/rd-mailform.php"
-        novalidate="novalidate">
-        <div class="row row-14 gutters-14">
-          <div class="col-md-4">
-            <div class="form-wrap">
-              <label class="form-label rd-input-label" for="contact-your-name-2">Nombre completo</label>
-              <input class="form-input form-control-has-validation" id="contact-your-name-2" type="text" name="name"
-                placeholder="Ingrese su correo" required>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="form-wrap">
-              <label class="form-label rd-input-label" for="contact-email-2">Correo electrónico</label>
-              <input class="form-input form-control-has-validation" id="contact-email-2" type="email" name="email"
-                placeholder="Ingrese su correo" required>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="form-wrap">
-              <label class="form-label rd-input-label" for="contact-phone-2">Celular</label>
-              <input class="form-input form-control-has-validation" id="contact-phone-2" type="text" name="phone"
-                placeholder="Ingrese su correo">
-            </div>
-          </div>
-          <div class="col-12">
-            <div class="form-wrap">
-              <label class="form-label rd-input-label" for="contact-message-2">Mensaje</label>
-              <textarea class="form-input textarea-lg form-control-has-validation form-control-last-child"
-                placeholder="En que te podemos ayudar?" id="contact-message-2" name="message" required></textarea>
-            </div>
-          </div>
-        </div>
-        <button class="button button-primary button-pipaluk" type="submit">Enviar mensaje</button>
-      </form>
+      <h3>Preguntas Frecuentes</h3>
+      <div class="faq">
+        <h4>¿Cuál es el horario de atención?</h4>
+        <p>Estamos disponibles de lunes a viernes, de 9:00 AM a 6:00 PM.</p>
+        <h4>¿Cómo puedo hacer una reclamación?</h4>
+        <p>Puedes enviarnos un correo electrónico a support@tuempresa.com con los detalles de tu reclamación.</p>
+      </div>
     </div>
   </section>
-  <style>
-    .section {
-      padding: 20px 0;
-    }
 
-    .bg-default {
-      background-color: #fff;
-    }
+  <br><hr>
 
-    .container {
-      width: 80%;
-      margin: 0 auto;
-    }
+  <!-- Sección de Mapa -->
+  <section class="section section-sm bg-default">
+    <div class="container">
+      <h3>Encuéntranos</h3>
+      <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13189.94274260342!2d-75.5653505751555!3d6.251845947701594!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e442b6e7fcd2cb9%3A0x1b1e3e41c241a91a!2sMedell%C3%ADn%2C%20Antioquia!5e0!3m2!1ses!2sco!4v1633058967752!5m2!1ses!2sco" width="100%" height="450" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    </div>
+  </section>
 
-    .title-classic {
-      margin-bottom: 20px;
-    }
-
-    .title-classic-title h3 {
-      margin: 0 0 10px;
-      font-size: 24px;
-    }
-
-    .title-classic-text p {
-      margin: 0;
-      font-size: 16px;
-    }
-
-    /* Form styles */
-    .rd-form {
-      margin-top: 20px;
-    }
-
-    .form-wrap {
-      margin-bottom: 15px;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-
-    .form-label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-
-    .textarea-lg {
-      height: 100px;
-    }
-
-    .button {
-      display: inline-block;
-      padding: 10px 20px;
-      font-size: 16px;
-      color: #fff;
-      background-color: #007bff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .button:hover {
-      background-color: #0056b3;
-    }
-
-    /* Grid system */
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      margin-right: -7px;
-      margin-left: -7px;
-    }
-
-    .col-md-4 {
-      flex: 0 0 33.33333%;
-      max-width: 33.33333%;
-      padding-right: 7px;
-      padding-left: 7px;
-    }
-
-    .col-12 {
-      flex: 0 0 100%;
-      max-width: 100%;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      .col-md-4 {
-        flex: 0 0 100%;
-        max-width: 100%;
-      }
-    }
-  </style>
+  {% include 'inc/footer.html' %}
 </body>
 
 </html>
-
-{% include 'inc/footer.html' %}

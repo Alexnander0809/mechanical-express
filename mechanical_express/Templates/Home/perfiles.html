@@ -18,7 +18,6 @@
         padding: 0;
         width: 100%;
         overflow-x: hidden;
-        /* Evita el desbordamiento horizontal */
     }
 
     nav {
@@ -37,8 +36,11 @@
     }
 
     .mecanico-img {
-        width: 300px;
+        width: 200px;
         height: 200px;
+        border-radius: 50%;
+        object-fit: cover;
+        /* Asegura que la imagen mantenga sus proporciones y no se deforme */
     }
 
     .card {
@@ -65,19 +67,18 @@
 
     .action-buttons {
         display: flex;
-        /* Cambiar a flexbox para alinear los botones en una fila */
         gap: 10px;
-        /* Espacio entre los botones */
         margin-top: 15px;
         justify-content: center;
-        /* Centrar los botones si es necesario */
     }
 
     .btn-like,
     .btn-report {
         width: 120px;
-        margin: 5px;
         font-size: 14px;
+        padding: 8px;
+        border-radius: 5px;
+        text-align: center;
     }
 
     .btn-like {
@@ -92,12 +93,10 @@
 
     .form-report {
         display: none;
-        /* Ocultar el formulario por defecto */
     }
 
     .form-report.show {
         display: block;
-        /* Mostrar el formulario cuando se le añada la clase 'show' */
     }
 
     .alert-container {
@@ -118,6 +117,15 @@
         color: #155724;
         background-color: #d4edda;
         border-color: #c3e6cb;
+    }
+
+    h5.text-uppercase {
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
+
+    p.text-muted {
+        margin-bottom: 15px;
     }
 
     @media (max-width: 768px) {
@@ -141,14 +149,15 @@
                             <h5 class="text-uppercase">{{ user.first_name }} {{ user.last_name }}</h5>
                             <p class="text-muted">{{ mecanico.profesion }}</p>
                             <div class="action-buttons">
+                                {% if not is_own_profile %}
                                 <form action="{% url 'like_mecanico' mecanico.id %}" method="post">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-like">👍 {{ mecanico.num_likes }}</button>
                                 </form>
                                 
                                 <button class="btn btn-report" id="reportButton">🚫 Denunciar</button>
+                                {% endif %}
                             </div>
-                            
                         </div>
                         <div class="col-md-8">
                             <ul class="list-group list-group-flush">
@@ -226,10 +235,11 @@
                 alert.style.opacity = '0';
                 setTimeout(function() {
                     alert.remove();
-                }, 500); // Tiempo para asegurar que el fade-out se complete
-            }, 5000); // Tiempo en milisegundos antes de ocultar (5 segundos)
+                }, 500);
+            }, 5000);
         });
     });
 </script>
+
 
 {% include 'inc/footer.html' %}

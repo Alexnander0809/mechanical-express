@@ -1,0 +1,108 @@
+{% load static %}
+
+{% block content %}
+<title>Mechanical Express | Pago</title>
+<link rel="icon" href="{% static 'img/logo.png' %}" type="image/x-icon">
+<link rel="stylesheet" href="{% static 'css/pagos.css' %}">
+
+<div class="payment-container">
+    <h1 class="payment-title">Información de Pago</h1>
+
+    <!-- Sección de Resumen de Pago -->
+    <div class="payment-summary">
+        <h2>Resumen del Pago</h2>
+        <p><strong>Usuario:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+        <p><strong>Correo Electrónico:</strong> {{ user.email }}</p>
+        <p><strong>Descripción:</strong> PLAN MECANICO PREMIUM</p>
+        <p><strong>Monto:</strong> $ 15.000.00 COP</p>
+    </div>
+
+    <div class="form-container">
+        <form method="post" class="payment-form">
+            {% csrf_token %}
+            <div class="field-container">
+                <label for="name">Nombre</label>
+                <input id="name" name="name" type="text" placeholder="Ingrese el nombre del propietario de la cuenta"
+                    pattern="[A-Za-z\s]+" title="Solo se permiten letras y espacios" required>
+            </div>
+            <div class="field-container">
+                <label for="cardnumber">Número de Tarjeta</label>
+                <input id="cardnumber" name="cardnumber" type="text" placeholder="Ingrese el número de la tarjeta"
+                    inputmode="numeric" title="El número de tarjeta debe tener el formato: 1234 5678 1234 5678"
+                    maxlength="19" required>
+            </div>
+            <div class="field-container">
+                <label for="expirationdate">Expiración (MM/AA)</label>
+                <input id="expirationdate" name="expirationdate" type="text" placeholder="MM/AA"
+                    pattern="(0[1-9]|1[0-2])/[0-9]{2}" maxlength="5" inputmode="numeric"
+                    title="La fecha de expiración debe tener el formato: MM/AA" required>
+                <span id="exp-error" style="color: red; display: none;">Mes inválido. Debe ser entre 01 y 12.</span>
+            </div>
+            <!-- Campo para el código de seguridad con un límite de 3 dígitos -->
+            <div class="field-container">
+                <label for="securitycode">Código de Seguridad</label>
+                <input id="securitycode" name="securitycode" type="text" placeholder="Ingrese la CVV de la tarjeta"
+                    pattern="[0-9]{3,4}" inputmode="numeric" title="El código de seguridad debe tener 3 o 4 dígitos"
+                    maxlength="3" required>
+            </div>
+
+            <div class="button-container">
+                <button type="submit" class="submit-button">Realizar Pago</button>
+                <a href="{% url 'miperfil' user_id %}" class="cancel-button">Cancelar Pago</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cardInput = document.getElementById('cardnumber');
+        const expirationInput = document.getElementById('expirationdate');
+        const expError = document.getElementById('exp-error');
+
+        // Formato para número de tarjeta
+        cardInput.addEventListener('input', function () {
+            let value = cardInput.value.replace(/\D/g, ''); // Elimina todo excepto números
+
+            // Limita a 16 dígitos y agrega espacios cada 4 dígitos
+            if (value.length > 16) {
+                value = value.slice(0, 16);
+            }
+            if (value.length > 0) {
+                value = value.match(/.{1,4}/g).join(' '); // Inserta espacios cada 4 dígitos
+            }
+
+            cardInput.value = value;
+        });
+
+        // Formato y validación para fecha de expiración MM/AA
+        expirationInput.addEventListener('input', function () {
+            let value = expirationInput.value.replace(/\D/g, ''); // Elimina todo excepto números
+
+            // Limita a 4 dígitos (MM y AA)
+            if (value.length > 4) {
+                value = value.slice(0, 4);
+            }
+
+            // Inserta la barra "/" después de los primeros dos dígitos (MM)
+            if (value.length > 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2);
+            }
+
+            expirationInput.value = value;
+
+            // Validar el mes (debe estar entre 01 y 12)
+            if (value.length >= 2) {
+                const month = parseInt(value.slice(0, 2), 10);
+                if (month < 1 || month > 12) {
+                    expError.style.display = 'inline';
+                    expirationInput.style.borderColor = 'red';
+                } else {
+                    expError.style.display = 'none';
+                    expirationInput.style.borderColor = '';
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

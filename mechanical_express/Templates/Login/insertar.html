@@ -72,10 +72,6 @@
 
                 <form method="POST" id="insertarForm">
                     {% csrf_token %}
-                    <select name="rol" id="rol">
-                        <option value="1">Usuario</option>  
-                        <option value="2">Mecánico</option>
-                    </select>
                     <div class="form-group">
                         <label for="nombres">Nombres:</label>
                         <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Ingrese su nombre" required>

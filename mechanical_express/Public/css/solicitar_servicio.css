@@ -1,0 +1,84 @@
+/* Estilos para los botones de filtro */
+.btn-filter {
+    border: 1px solid #007bff; /* Color de borde */
+    background-color: #ffffff; /* Color de fondo */
+    color: #007bff; /* Color del texto */
+    border-radius: 4px; /* Bordes ligeramente redondeados */
+    padding: 10px 20px;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+    text-decoration: none;
+}
+
+.btn-filter.active,
+.btn-filter:hover {
+    background-color: #007bff; /* Color de fondo cuando está activo o en hover */
+    color: #ffffff; /* Color del texto */
+}
+
+/* Estilo para los botones premium */
+.btn-premium {
+    border: 1px solid #f8c746; /* Borde amarillo */
+    background-color: #f8c746; /* Fondo amarillo */
+    color: #333; /* Color del texto oscuro */
+}
+
+.btn-premium.active,
+.btn-premium:hover {
+    background-color: #f8c746; /* Mantener el fondo amarillo cuando está activo o en hover */
+    color: #333; /* Mantener el color del texto oscuro */
+}
+
+.premium-star {
+    font-size: 18px; /* Tamaño de la estrella */
+    margin-right: 8px; /* Espacio entre la estrella y el texto */
+}
+
+/* Estilos para los botones de perfil */
+.btn-profile {
+    border-radius: 4px; /* Bordes ligeramente redondeados */
+    padding: 8px 16px;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #007bff;
+    border: none;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.btn-profile:hover {
+    background-color: #0056b3; /* Color de fondo en hover */
+}
+
+/* Estilos para los botones de paginación */
+.btn-pagination {
+    border-radius: 4px; /* Bordes ligeramente redondeados */
+    padding: 8px 12px;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #007bff;
+    border: 1px solid #007bff;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.page-item .page-link {
+    border-radius: 4px; /* Bordes ligeramente redondeados */
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+}
+
+.page-item.active .page-link,
+.page-item:hover .page-link {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.page-item.disabled .page-link {
+    background-color: #e9ecef;
+    color: #6c757d;
+}
