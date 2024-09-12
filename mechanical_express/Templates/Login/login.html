@@ -18,35 +18,81 @@
             background-position: center;
             background-repeat: no-repeat;
             color: #fff;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
         .card {
-            background-color: rgba(255, 255, 255, 0.85); /* Fondo blanco medio transparente */
-            padding: 20px;
-            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco casi opaco */
+            padding: 30px;
+            border-radius: 12px;
             text-align: center;
-            color: #333; /* Cambiar el texto a un color oscuro para mejor contraste */
+            color: #333;
             max-width: 400px;
             width: 100%;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Añadir una sombra suave */
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: #162E44;
+        }
+
+        .form-group input {
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            padding: 10px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            width: calc(100% - 22px); /* Ajuste del ancho para el padding */
+        }
+
+        .form-group input:focus {
+            border-color: #162E44;
+            box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
         }
 
         .btn {
-            margin-top: 15px;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 1rem;
         }
 
-        .contenedor-icono img {
-            width: 50px;
-            height: auto;
+        .btn-primary {
+            background-color: #162E44;
+            border-color: #162E44;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
         }
 
         .forgot-password,
         .register-link {
             display: block;
-            margin: 10px 0;
-            font-size: 0.9rem;
+            font-size: 0.9rem; /* Reducir el tamaño del texto */
             text-decoration: none;
-            color: #007bff;
+            color: #162E44;
+            margin: 5px 0; /* Separar un poco los enlaces del botón */
+            text-align: left; /* Alineación a la izquierda */
         }
 
         .forgot-password:hover,
@@ -54,54 +100,46 @@
             text-decoration: underline;
         }
 
-        .form-group label {
-            text-align: left;
-            font-weight: bold;
+        .text-center {
+            text-align: center;
         }
     </style>
 </head>
 
 <body>
-    <div class="card">
-        <h2 class="mb-4">Iniciar Sesión</h2>
+    <div class="container">
+        <div class="card">
+            <h2 class="mb-4">Iniciar Sesión</h2>
 
-        {% if messages %}
-        <div class="alert alert-danger" role="alert">
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                        <div class="alert alert-success" role="alert">
+                            {{ message }}
+                        </div>
+                    {% elif message.tags == 'error' %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Ingrese su Correo electrónico" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="Ingrese su Contraseña" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Iniciar sesión</button>
+            </form>
+            
+            <a href="{% url 'olvidaste_contrasena' %}" class="forgot-password">¿Olvidaste tu contraseña?</a>
+            <a href="{% url 'registrar' %}" class="register-link">¿No tienes cuenta? Regístrate aquí</a>
+            <a href="{% url 'principal' %}" class="btn btn-secondary btn-block mt-3">Volver a la Página Principal</a>
         </div>
-        {% endif %}
-
-        <form method="POST">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="email">Correo Electrónico:</label>
-                <input type="email" name="email" id="email" class="form-control" placeholder="Ingresa tu correo electrónico" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Contraseña:</label>
-                <input type="password" name="password" id="password" class="form-control" placeholder="Ingresa tu contraseña" required>
-            </div>
-            <div class="form-group">
-                <label for="rol">Rol:</label>
-                <select name="rol" id="rol" class="form-control" required>
-                    <option value="mecanico">Mecánico</option>  
-                    <option value="usuario">Usuario</option>
-                </select>
-            </div>
-            
-            <a href="{% url 'password_reset' %}" class="forgot-password">¿Olvidaste tu contraseña?</a>
-            <!-- Enlace para el olvido de contraseña -->
-
-            <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
-            
-            <a href="{% url 'registro' %}" class="register-link">¿No tienes cuenta? Crea una aquí</a>
-            <!-- Enlace para registrarse -->
-        </form>
-
-        <a href="{% url 'principal' %}" class="btn btn-secondary btn-block mt-3">Volver a la Página Principal</a>
-        <!-- Botón para volver a la página principal -->
     </div>
 </body>
 

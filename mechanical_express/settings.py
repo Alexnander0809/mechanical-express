@@ -31,13 +31,13 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'mechanical_express.urls'
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'mechanical_express', 'Templates'),
-        ],
-        'APP_DIRS': True,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Asegúrate de que esto apunte a la carpeta templates en la raíz del proyecto
+        'APP_DIRS': True,  # Esto debe estar en False ya que no estás usando apps
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -49,6 +49,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'mechanical_express.wsgi.application'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -56,9 +57,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dedededo',
+        'NAME': 'mechanical_express',
         'USER': 'root',
-        'PASSWORD': os.getenv('DB_PASSWORD', ''),  # Usa una variable de entorno para la contraseña
+        'PASSWORD': '',  # Usa una variable de entorno para la contraseña
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
@@ -82,6 +83,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+
+
 LANGUAGE_CODE = 'es-es'  # Cambiado a español
 
 TIME_ZONE = 'America/Bogota'  # Cambiado a la zona horaria de Colombia
@@ -97,6 +101,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'mechanical_express', 'Public'),
 ]
+
+AUTH_USER_MODEL = 'mechanical_express.CustomUser'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mechanical_express', 'Public', 'img')

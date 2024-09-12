@@ -3,7 +3,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from mechanical_express.views import (
     confirmacion_pago, like_mecanico, pagos, planes, principal, report_mecanico, solicitar_servicio, contactenos, miperfil, 
-    perfiles, configuracion, loginusuario, insertarusuario, logoutusuario
+    perfiles, configuracion, login, registrar, logoutusuario
 )
 
 urlpatterns = [
@@ -28,9 +28,9 @@ urlpatterns = [
     path('usuarios/configuracion/<int:id>/', configuracion, name='configuracion'),
     
     # Registro, login y logout
-    path('login/insertar/', insertarusuario, name='registro'),
-    path('login/', loginusuario, name='login'),
-    path('login/olvidaste_contrasena/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    path('login/registrar/', registrar, name='registrar'),
+    path('login/login/', login, name='login'),
+    path('login/olvidaste_contrasena/', auth_views.PasswordResetView.as_view(), name='olvidaste_contrasena'),
     path('login/reset_password_sent/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('login/reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('login/reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='Login/password_reset_complete.html'), name='password_reset_complete'),

@@ -1,10 +1,38 @@
 from datetime import timedelta, timezone
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 from django.core.mail import send_mail
 
+from mechanical_express import settings
+
+class Rol(models.Model):
+    nombre = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        db_table = 'rol'
+
+class CustomUser(AbstractUser):
+    ROLES = (
+        ('usuario', 'Usuario'),
+        ('mecanico', 'Mecanico'),
+    )
+    rol = models.CharField(max_length=50, choices=ROLES, default='usuario')
+
+    def __str__(self):
+        return self.username
+
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    rol = models.ForeignKey(Rol, on_delete=models.CASCADE, default=1)  # Suponiendo que 1 es el id predeterminado de 'usuario'
+
+    def __str__(self):
+        return f"{self.user.username} - {self.rol.nombre}"
+
 class Pago(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Relación con la tabla de usuarios
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # Relación con la tabla de usuarios
     name = models.CharField(max_length=255)  # Nombre del propietario de la cuenta
     cardnumber = models.CharField(max_length=19)  # Número de tarjeta (formato 1234 5678 1234 5678)
     expirationdate = models.CharField(max_length=5)  # Fecha de expiración en formato MM/AA
@@ -19,7 +47,7 @@ class Pago(models.Model):
         db_table = "pago"
 
 class Mecanico(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     foto = models.CharField(max_length=150)
     telefono = models.CharField(max_length=10, null=True, blank=True)
     direccion = models.CharField(max_length=150, null=True, blank=True)
@@ -38,7 +66,7 @@ class Mecanico(models.Model):
 
         
 class Like(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     mecanico = models.ForeignKey(Mecanico, on_delete=models.CASCADE)
 
     class Meta:
@@ -82,7 +110,7 @@ class Mantenimiento(models.Model):
         db_table = "mantenimientos"
 
 class Denuncia(models.Model):   
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     mecanico = models.ForeignKey(Mecanico, on_delete=models.CASCADE)
     tipo_denuncia = models.CharField(max_length=50)
     descripcion = models.CharField(max_length=255) 

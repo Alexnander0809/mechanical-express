@@ -1,17 +1,20 @@
+import re
 from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render, redirect
-from django.urls import reverse
+from django.contrib.auth import login as auth_login
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
-from django.contrib.auth import login, authenticate, logout     
+from django.contrib.auth import  authenticate, login as auth_login     
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import Like, Mecanico, Mantenimiento, Denuncia, Pago
+from .models import CustomUser, Like, Mecanico, Mantenimiento, Denuncia, Pago, Rol
 from django.contrib.auth.hashers import check_password
-import re
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.hashers import make_password
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+import traceback
 
 #region vistas principales
 
@@ -63,12 +66,14 @@ def perfiles(request, id):
 
     is_authenticated = current_user.is_authenticated
     is_own_profile = is_authenticated and current_user.id == mecanico_user.id
+    is_current_user_mechanic = is_authenticated and current_user.groups.filter(name='Mecanicos').exists()
 
     return render(request, "Home/perfiles.html", {
         'mecanico': mecanico,
-        'mecanico_user': mecanico_user,  # Cambié el nombre para evitar confusión
-        'current_user': current_user,  # Usuario de la sesión actual
-        'is_own_profile': is_own_profile
+        'mecanico_user': mecanico_user,
+        'current_user': current_user,
+        'is_own_profile': is_own_profile,
+        'is_current_user_mechanic': is_current_user_mechanic
     })
 
 @login_required
@@ -98,89 +103,98 @@ def like_mecanico(request, mecanico_id):
 
 #region login
 
-def insertarusuario(request):
+def registrar(request):
     if request.method == 'POST':
-        nombres = request.POST.get('nombres')
-        apellidos = request.POST.get('apellidos')
+        print("Solicitud POST recibida")  # Depuración
+        print(request.POST)
+
+        username = request.POST.get('email')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm-password')
+        confirm_password = request.POST.get('confirm_password')
+        rol_id = request.POST.get('rol')
 
-        # Verificación de formato de email
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            mensaje = "El formato del correo electrónico no es válido."
-            return render(request, 'Login/insertar.html', {'mensaje': mensaje})
+        # Validación básica
+        if not username or not email or not password or not rol_id or not confirm_password:
+            print("Faltan campos obligatorios")  # Depuración
+            return render(request, 'Login/registrar.html', {'mensaje': 'Todos los campos son obligatorios.'})
 
+        # Validar formato del email
+        try:
+            validate_email(email)
+        except ValidationError:
+            print("Correo electrónico inválido")  # Depuración
+            return render(request, 'Login/registrar.html', {'mensaje': 'Correo electrónico inválido.'})
+
+        # Verificar longitud y complejidad de la contraseña
+        password_pattern = re.compile(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$')
+        if not password_pattern.match(password):
+            print("Contraseña no cumple requisitos")  # Depuración
+            return render(request, 'Login/registrar.html', {'mensaje': 'La contraseña debe tener al menos 8 caracteres, incluyendo una letra, un número y un carácter especial.'})
+
+        # Verificar si las contraseñas coinciden
         if password != confirm_password:
-            mensaje = "Las contraseñas no coinciden."
-            return render(request, 'Login/insertar.html', {'mensaje': mensaje})
+            print("Contraseñas no coinciden")  # Depuración
+            return render(request, 'Login/registrar.html', {'mensaje': 'Las contraseñas no coinciden.'})
 
-        if User.objects.filter(email=email).exists():
-            mensaje = "El correo electrónico ya está registrado."
-            return render(request, 'Login/insertar.html', {'mensaje': mensaje})
+        # Obtener el rol seleccionado
+        try:
+            rol = Rol.objects.get(id=rol_id)
+        except Rol.DoesNotExist:
+            print("Rol no encontrado")  # Depuración
+            return render(request, 'Login/registrar.html', {'mensaje': 'Rol inválido.'})
 
-        # Crear el usuario
-        usuario = User.objects.create_user(username=email, email=email, password=password)
-        usuario.first_name = nombres
-        usuario.last_name = apellidos
-        usuario.save()
-
-        # Crear un perfil de Mecanico asociado al usuario recién creado
-        Mecanico.objects.create(
-            user=usuario,
-            foto=None,
-            telefono='',
-            direccion='',
-            ubicacion='',
-            descripcion='',
-            num_likes=0,
-            tipo_afiliacion='Regular',
-            profesion='',
-            estado='Inactivo'  # Cambia el estado inicial a "Inactivo"
+        # Crear usuario
+        user = CustomUser(
+            username=username,
+            email=email,
+            rol=rol,
         )
+        user.set_password(password)  # Establecer la contraseña encriptada
+        try:
+            user.save()
+            print("Usuario registrado correctamente")
+        except Exception as e:
+            print(f"Error al registrar el usuario: {e}")
+            traceback.print_exc()  # Imprimir la traza completa del error
+            return render(request, 'Login/registrar.html', {'mensaje': 'Ocurrió un error al registrar el usuario.'})
 
+        # Iniciar sesión automáticamente
+        auth_login(request, user)
 
-        messages.success(request, 'Usuario creado exitosamente. Ahora puedes iniciar sesión.')
+        print("Usuario registrado correctamente")  # Depuración
         return redirect('login')
 
-    return render(request, 'Login/insertar.html')
+    print("Método no es POST")  # Depuración
+    return render(request, 'Login/registrar.html')
 
-def loginusuario(request):
+def login(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
-        rol = request.POST.get('rol')
 
-        user = authenticate(request, username=email, password=password)
+        try:
+            # Buscar al usuario por email
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            user = None
 
+        # Autenticar el usuario
+        user = authenticate(request, username=user.username, password=password)
         if user is not None:
-            login(request, user)
-
-            # Verificar si el usuario es mecánico
-            if rol == 'mecanico':
-                mecanico = Mecanico.objects.filter(user=user).first()
-
-                if mecanico:
-                    request.session['is_mechanic'] = True
-
-                    # Activar el mecánico si su estado es "Inactivo"
-                    if mecanico.estado == 'Inactivo':
-                        mecanico.estado = 'Activo'
-                        mecanico.save()
-                else:
-                    request.session['is_mechanic'] = False
+            auth_login(request, user)
+            if hasattr(user, 'rol') and user.rol == 'mecanico':
+                messages.success(request, 'Inicio de sesión exitoso.')
+                return redirect('miperfil')
             else:
-                request.session['is_mechanic'] = False
-
-            # Redirigir según el rol
-            if rol == 'mecanico' and request.session['is_mechanic']:
-                return redirect('miperfil', id=user.id)
-            elif rol == 'usuario':
+                messages.success(request, 'Inicio de sesión exitoso.')
                 return redirect('principal')
         else:
-            messages.error(request, 'Correo o contraseña incorrectos. Inténtalo de nuevo.')
+            messages.error(request, 'Credenciales incorrectas.')
+            return render(request, 'Login/login.html')
 
     return render(request, 'Login/login.html')
+
 
 def logoutusuario(request):
     logout(request)

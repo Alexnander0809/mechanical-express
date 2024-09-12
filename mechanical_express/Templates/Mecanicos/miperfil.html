@@ -80,6 +80,14 @@
             <div class="card shadow-lg">
                 <div class="card-body">
                     <h4 class="text-center">Editar Perfil</h4>
+                    {% if messages %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+            
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {% for m in mec %}
