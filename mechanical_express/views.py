@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
 from django.contrib.auth import  authenticate, login as auth_login     
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import CustomUser, Like, Mecanico, Mantenimiento, Denuncia, Pago, Rol
