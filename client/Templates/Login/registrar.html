@@ -163,11 +163,14 @@
     <div class="container">
         <div class="card">
             <div class="card-body">
-                <h2 class="text-center mb-4">Registrate</h2>
-                {% if mensaje %}
-                <div class="alert {% if mensaje == 'Ocurrió un error al registrar el usuario.' or mensaje == 'Todos los campos son obligatorios.' or mensaje == 'Correo electrónico inválido.' or mensaje == 'La contraseña debe tener al menos 8 caracteres, incluyendo una letra, un número y un carácter especial.' or mensaje == 'Las contraseñas no coinciden.' or mensaje == 'Rol inválido.' %} alert-danger {% else %} alert-success {% endif %}">
-                    {{ mensaje }}
+                <h2 class="text-center mb-4">Regístrate</h2>
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+                {% endfor %}
                 {% endif %}
                 <form id="insertarForm" method="POST">
                     {% csrf_token %}
@@ -205,8 +208,10 @@
                     <div class="form-group">
                         <label for="rol">Rol</label>
                         <select id="rol" name="rol" required>
-                            <option value="1">Usuario</option>
-                            <option value="2">Mecánico</option>
+                            {% for rol in roles %}
+                            <option name="rol" value="{{ rol.id }}">{{ rol.nombre }}</option>
+                            {% endfor %}
+                            <h1>{{ rol.id }}</h1>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Registrar</button>
@@ -255,18 +260,17 @@
             numberCriteria.classList.toggle('valid', /[0-9]/.test(password));
             numberCriteria.classList.toggle('invalid', !/[0-9]/.test(password));
 
-            specialCriteria.classList.toggle('valid', /[!@#$%^&*(),.?":{}|<>]/.test(password));
-            specialCriteria.classList.toggle('invalid', !/[!@#$%^&*(),.?":{}|<>]/.test(password));
+            specialCriteria.classList.toggle('valid', /[@#$%^&*(),.?":{}|<>]/.test(password));
+            specialCriteria.classList.toggle('invalid', !/[@#$%^&*(),.?":{}|<>]/.test(password));
         });
 
-        var confirmPasswordInput = document.getElementById('confirm_password');
-
-        confirmPasswordInput.addEventListener('input', function () {
-            var confirmPassword = confirmPasswordInput.value;
-            if (confirmPassword !== passwordInput.value) {
-                confirmPasswordInput.setCustomValidity('Las contraseñas no coinciden.');
-            } else {
-                confirmPasswordInput.setCustomValidity('');
+        var form = document.getElementById('insertarForm');
+        form.addEventListener('submit', function (e) {
+            var password = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('confirm_password').value;
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Las contraseñas no coinciden.');
             }
         });
     </script>

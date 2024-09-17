@@ -99,15 +99,15 @@
                 </ul>
 
                 <div class="d-flex">
-                    {% if user.is_authenticated %}
+                    {% if CustomerUser.is_authenticated %}
                     <!-- Contenido para usuarios autenticados -->
                     <div class="dropdown">
                         <button class="btn btn-custom dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            Bienvenido {{ user.first_name }}
+                            Bienvenido {{ CustomerUser.first_name }}
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            {% if is_mechanic %}
+                            {% if rol_usuario == "Mecánico" %}
                             <li><a class="dropdown-item" href="{% url 'miperfil' id=user.id %}"><i
                                         class="bi bi-person me-2"></i>Mi perfil</a></li>
                             {% endif %}

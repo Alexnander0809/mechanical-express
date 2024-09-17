@@ -2,14 +2,14 @@
 {% load static %}
 
 {% if messages %}
-<div class="alert-container">
     {% for message in messages %}
-    <div class="alert alert-success" role="alert">
-        {{ message }}
-    </div>
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     {% endfor %}
-</div>
 {% endif %}
+
 
 <style>
     body,
@@ -150,20 +150,22 @@
                             <p class="text-muted">{{ mecanico.profesion }}</p>
 
                             <div class="action-buttons">
-                                {% if not is_own_profile and not is_current_user_mechanic %}
-                                {% if current_user.is_authenticated %}
-                                <form action="{% url 'like_mecanico' mecanico.id %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-like">👍 {{ mecanico.num_likes }}</button>
-                                </form>
-                                <button class="btn btn-report" id="reportButton">🚫 Denunciar</button>
+                                {% if can_like %}
+                                    <form action="{% url 'like_mecanico' mecanico.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-like">
+                                            {% if has_liked %} 👎 Quitar Like {% else %} 👍 Dar Like {% endif %}
+                                        </button>
+                                    </form>
                                 {% else %}
-                                <div class="alert alert-warning" role="alert">
-                                    Debes iniciar sesión para poder dar like o denunciar.
-                                </div>
-                                {% endif %}
+                                    {% if not is_authenticated %}
+                                    <div class="alert alert-warning" role="alert">
+                                        Debes iniciar sesión para interactuar.
+                                    </div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
+                            
 
 
 
@@ -184,8 +186,7 @@
                                 <li class="list-group-item"><strong>Ubicación:</strong> {{ mecanico.ubicacion }}</li>
                                 <li class="list-group-item"><strong>Descripción:</strong> {{ mecanico.descripcion }}
                                 </li>
-                                <li class="list-group-item"><strong>Tipo de afiliación:</strong> {{
-                                    mecanico.tipo_afiliacion }}</li>
+                                <li class="list-group-item"><strong>Tipo de afiliación:</strong> {{mecanico.tipo_afiliacion }}</li>
                             </ul>
                         </div>
                     </div>

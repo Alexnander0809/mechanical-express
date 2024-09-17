@@ -10,6 +10,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yourdomain.com']  # Ajusta según tus necesidades
 
 INSTALLED_APPS = [
+    'client',
     'mechanical_express',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -29,14 +30,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'mechanical_express.urls'
+ROOT_URLCONF = 'client.urls'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Asegúrate de que esto apunte a la carpeta templates en la raíz del proyecto
+        'DIRS': [os.path.join(BASE_DIR, 'client', 'templates')],  # Asegúrate de que esto apunte a la carpeta templates en la raíz del proyecto
         'APP_DIRS': True,  # Esto debe estar en False ya que no estás usando apps
         'OPTIONS': {
             'context_processors': [
@@ -86,7 +87,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 
-LANGUAGE_CODE = 'es-es'  # Cambiado a español
+LANGUAGE_CODE = 'es-co'  # Cambiado a español
 
 TIME_ZONE = 'America/Bogota'  # Cambiado a la zona horaria de Colombia
 
@@ -99,13 +100,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'mechanical_express', 'Public'),
+    os.path.join(BASE_DIR, 'client', 'Public'),
 ]
 
-AUTH_USER_MODEL = 'mechanical_express.CustomUser'
+AUTH_USER_MODEL = 'client.CustomerUser'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'mechanical_express', 'Public', 'img')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'client', 'Public', 'img', 'mecanicos')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
