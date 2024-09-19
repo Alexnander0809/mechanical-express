@@ -36,7 +36,8 @@
         border-radius: 10px;
     }
 
-    .modal-header, .modal-footer {
+    .modal-header,
+    .modal-footer {
         border: none;
     }
 
@@ -79,12 +80,23 @@
         <div class="col-lg-8 col-md-10 col-sm-12">
             <h3 class="text-center page-title">Información Personal</h3>
             {% if messages %}
-                    <div class="alert alert-danger" role="alert">
-                        {% for message in messages %}
-                            {{ message }}
-                        {% endfor %}
-                    </div>
-                    {% endif %}
+            <div class="container">
+                {% for message in messages %}
+                {% if message.tags == 'error' %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% elif message.tags == 'success' %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
             <!-- Formulario de Información Personal -->
             <form action="" method="POST">
                 {% csrf_token %}
@@ -94,29 +106,34 @@
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group">
                             <label class="label-bold">Primer nombre:</label>
-                            <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}" required>
+                            <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}"
+                                pattern=".*\S+.*" title="Este campo no puede estar vacío o solo contener espacios"
+                                required>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group">
                             <label class="label-bold">Segundo nombre:</label>
-                            <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}" required>
+                            <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}"
+                                pattern=".*\S+.*" title="Este campo no puede estar vacío o solo contener espacios"
+                                required>
                         </div>
                     </div>
                 </div>
 
-                <!-- Correo Electrónico y Apodo -->
+                <!-- Correo Electrónico y Apodo (solo lectura) -->
                 <div class="row">
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group">
                             <label class="label-bold">Correo Electrónico:</label>
-                            <input type="email" name="email" class="form-control" value="{{ user.email }}" required>
+                            <input type="email" name="email" class="form-control" value="{{ user.email }}" readonly>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-12">
                         <div class="form-group">
                             <label class="label-bold">Apodo:</label>
-                            <input type="text" name="username" class="form-control" value="{{ user.username }}" required>
+                            <input type="text" name="username" class="form-control" value="{{ user.username }}"
+                                readonly>
                         </div>
                     </div>
                 </div>
@@ -125,7 +142,8 @@
                 <div class="row">
                     <div class="col-12 text-center">
                         <div class="form-group">
-                            <input type="submit" name="action" value="Actualizar Información" class="btn btn-success btn-custom">
+                            <input type="submit" name="action" value="Actualizar Información"
+                                class="btn btn-success btn-custom">
                         </div>
                     </div>
                 </div>
@@ -134,14 +152,16 @@
             <!-- Botón para mostrar el modal de eliminación -->
             <div class="row">
                 <div class="col-12 text-center mt-4">
-                    <button type="button" class="btn btn-danger btn-custom" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                    <button type="button" class="btn btn-danger btn-custom" data-bs-toggle="modal"
+                        data-bs-target="#deleteAccountModal">
                         Eliminar mi cuenta
                     </button>
                 </div>
             </div>
 
             <!-- Modal para eliminar cuenta -->
-            <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+            <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -156,7 +176,8 @@
                                     <input type="password" name="password" class="form-control" required>
                                 </div>
                                 <div class="text-center mt-3">
-                                    <button type="submit" name="action" value="Eliminar mi cuenta" class="btn btn-danger btn-custom">
+                                    <button type="submit" name="action" value="Eliminar mi cuenta"
+                                        class="btn btn-danger btn-custom">
                                         Confirmar eliminación
                                     </button>
                                     <button type="button" class="btn btn-secondary btn-custom" data-bs-dismiss="modal">

@@ -30,6 +30,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Backend por defecto
+    'client.backends.EmailBackend',  # Nuestro backend personalizado
+]
+
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+
 ROOT_URLCONF = 'client.urls'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -114,3 +123,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'alexvalderramaguisao@gmail.com'
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')  # Usa una variable de entorno para la contraseña
+
+LOGIN_URL = 'login'  # Redirige aquí si no estás autenticado
+LOGIN_REDIRECT_URL = ''  # Dónde redirigir tras iniciar sesión
+LOGOUT_REDIRECT_URL = 'login'  # Dónde redirigir tras cerrar sesión

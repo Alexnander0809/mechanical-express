@@ -117,7 +117,7 @@
             <p class="card-text"><i class="fas fa-calendar-alt fa-lg text-muted"></i> Listado básico de servicios con
               tarifas estándar</p>
             <p class="card-text"><i class="fas fa-question-circle fa-lg text-muted"></i> Soporte básico en línea</p>
-            <button class="btn btn-secondary btn-block">Plan Actual</button>
+            <button class="btn btn-secondary btn-block">Plan Regular</button>
           </div>
         </div>
       </div>
@@ -137,9 +137,9 @@
               formación y eventos exclusivos</p>
             {% if mecanico %}
             {% if mecanico.tipo_afiliacion == 'premium' %}
-            <a href="" class="btn btn-primary btn-block btn-link">Ya eres premium</a>
+            <a href="" class="btn btn-primary btn-block btn-link">Ya eres premium !!</a>
             {% else %}
-            <a href="{% url 'pagos' user.id %}" class="btn btn-primary btn-block btn-link">Convertirme a premium</a>
+            <a href="{% url 'pagos' user.id %}" class="btn btn-primary btn-block btn-link">Convertirme a premium!!</a>
             {% endif %}
             {% else %}
             <!-- Opcionalmente maneja el caso donde no se encontró el mecánico -->

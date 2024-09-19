@@ -112,17 +112,13 @@
             <h2 class="mb-4">Iniciar Sesión</h2>
 
             {% if messages %}
-                {% for message in messages %}
-                    {% if message.tags == 'success' %}
-                        <div class="alert alert-success" role="alert">
+                <div class="mb-3">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}" role="alert">
                             {{ message }}
                         </div>
-                    {% elif message.tags == 'error' %}
-                        <div class="alert alert-danger" role="alert">
-                            {{ message }}
-                        </div>
-                    {% endif %}
-                {% endfor %}
+                    {% endfor %}
+                </div>
             {% endif %}
 
             <form method="POST">
@@ -136,11 +132,27 @@
                 <button type="submit" class="btn btn-primary btn-block">Iniciar sesión</button>
             </form>
             
+            
             <a href="{% url 'olvidaste_contrasena' %}" class="forgot-password">¿Olvidaste tu contraseña?</a>
             <a href="{% url 'registrar' %}" class="register-link">¿No tienes cuenta? Regístrate aquí</a>
             <a href="{% url 'principal' %}" class="btn btn-secondary btn-block mt-3">Volver a la Página Principal</a>
         </div>
     </div>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        
+        form.addEventListener('submit', function(event) {
+            const email = form.querySelector('input[name="email"]').value.trim();
+            const password = form.querySelector('input[name="password"]').value.trim();
+
+            if (!email || !password) {
+                alert('Por favor, complete ambos campos sin espacios en blanco.');
+                event.preventDefault();  // Evita que se envíe el formulario
+            }
+        });
+    });
+</script>
 
 </html>

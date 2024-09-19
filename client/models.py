@@ -3,7 +3,6 @@ from django.db import models
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
 from django.core.mail import send_mail
 
-from mechanical_express import settings
 
 class Rol(models.Model):
     nombre = models.CharField(max_length=50)
@@ -15,6 +14,7 @@ class Rol(models.Model):
         db_table = 'rol'
 
 class CustomerUser(AbstractUser):
+    email = models.EmailField(unique=True)
     rol = models.ForeignKey(Rol, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
@@ -56,14 +56,14 @@ class Pago(models.Model):
 class Mecanico(models.Model):
     user = models.OneToOneField(CustomerUser, on_delete=models.CASCADE)
     foto = models.CharField(max_length=150)
-    telefono = models.CharField(max_length=10, null=True, blank=True)
-    direccion = models.CharField(max_length=150, null=True, blank=True)
-    ubicacion = models.CharField(max_length=150, null=True, blank=True)
-    descripcion = models.CharField(max_length=300, null=True, blank=True)
+    telefono = models.CharField(max_length=10, blank=True)
+    direccion = models.CharField(max_length=150, blank=True)
+    ubicacion = models.CharField(max_length=150, blank=True)
+    descripcion = models.CharField(max_length=300, blank=True)
     num_likes = models.PositiveIntegerField(default=0)
-    tipo_afiliacion = models.CharField(max_length=150, null=True, blank=True)
-    profesion = models.CharField(max_length=300, null=True, blank=True)
-    estado = models.CharField(max_length=20, null=True, blank=True)
+    tipo_afiliacion = models.CharField(max_length=150, blank=True)
+    profesion = models.CharField(max_length=300, blank=True)
+    estado = models.CharField(max_length=20, blank=True)
 
     def __str__(self):
         return f'{self.user.username} - {self.profesion}'

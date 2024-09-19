@@ -99,8 +99,33 @@
                 </ul>
 
                 <div class="d-flex">
-                    {% if CustomerUser.is_authenticated %}
+                    {% if user.is_authenticated %}
                     <!-- Contenido para usuarios autenticados -->
+                    <div class="dropdown">
+                        <button class="btn btn-custom dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Bienvenido {{ user.first_name }}
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            {% if rol_usuario == 2 %}
+                            <li><a class="dropdown-item" href="{% url 'miperfil' id=user.id %}"><i
+                                        class="bi bi-person me-2"></i>Mi perfil</a></li>
+                            {% endif %}
+                            <li><a class="dropdown-item" href="{% url 'configuracion' id=user.id %}"><i
+                                        class="bi bi-gear me-2"></i>Configuración</a></li>
+                            <li><a class="dropdown-item" href="{% url 'salir' %}"><i
+                                        class="bi bi-box-arrow-right me-2"></i>Salir</a></li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <!-- Contenido para usuarios no autenticados -->
+                    <a class="nav-link text-center btn btn-custom login-btn" href="{% url 'login' %}">Acceder</a>
+                    <a class="nav-link text-center btn btn-custom register-btn"
+                        href="{% url 'registrar' %}">Registrarme</a>
+                    {% endif %}
+
+                    <!-- {% if CustomerUser.is_authenticated %}
+                    Contenido para usuarios autenticados 
                     <div class="dropdown">
                         <button class="btn btn-custom dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -118,11 +143,11 @@
                         </ul>
                     </div>
                     {% else %}
-                    <!-- Contenido para usuarios no autenticados -->
+                     Contenido para usuarios no autenticados
                     <a class="nav-link text-center btn btn-custom login-btn" href="{% url 'login' %}">Acceder</a>
                     <a class="nav-link text-center btn btn-custom register-btn"
                         href="{% url 'registrar' %}">Registrarme</a>
-                    {% endif %}
+                    {% endif %} -->
 
 
                 </div>

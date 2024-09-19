@@ -1,6 +1,6 @@
 from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth import login as auth_login
+from django.contrib.auth import login 
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.core.files.storage import FileSystemStorage
@@ -11,15 +11,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import CustomerUser, Like, Mecanico, Mantenimiento, Denuncia, Pago, Rol
 from django.contrib.auth.hashers import check_password
+from django.core.exceptions import ObjectDoesNotExist
 
 #region vistas principales
 
 def principal(request):
     if request.user.is_authenticated:
-        # Accede al rol del usuario
-        rol_usuario = request.user.rol.nombre  # Asumiendo que tienes una relación `user.rol`
+        rol_usuario = request.user.rol.id if request.user.rol else None
     else:
-        rol_usuario = None
+        rol_usuario = None  # Usuario no autenticado
 
     return render(request, 'Home/principal.html', {'rol_usuario': rol_usuario})
 
@@ -49,30 +49,47 @@ def contactenos(request):
     return render(request, "Home/contactenos.html")
 
 def perfiles(request, id):
+    # Obtener el perfil del mecánico a partir del id
     mecanico = get_object_or_404(Mecanico, id=id)
-    mecanico_user = mecanico.user  # Usuario relacionado con el mecánico
-    current_user = request.user  # Usuario actual de la sesión
+    mecanico_user = mecanico.user  # Usuario asociado al mecánico
+    current_user = request.user  # Usuario actual autenticado
 
-    is_authenticated = current_user.is_authenticated
-    is_own_profile = is_authenticated and current_user.id == mecanico_user.id
-    is_current_user_mechanic = is_authenticated and current_user.rol and current_user.rol.nombre == 'Mecanico'
-    can_like = is_authenticated and not is_own_profile and not is_current_user_mechanic
-    can_report = is_authenticated and current_user.rol and current_user.rol.nombre == 'Usuario'
+    # Verificación de autenticación
+    if not current_user.is_authenticated:
+        messages.warning(request, "Debes iniciar sesión para interactuar.")
+        return redirect('login')
 
-    # Verificar si el usuario ya ha denunciado a este mecánico
+    # Verificación de si el usuario está viendo su propio perfil
+    is_own_profile = current_user.id == mecanico_user.id
+
+    # Obtener el rol del usuario actual
+    user_rol = getattr(current_user, 'rol', None)
+    is_current_user_mechanic = user_rol and user_rol.nombre == 'Mecanico'
+
+    # Condiciones para permitir dar like o reportar
+    can_like = not is_own_profile and not is_current_user_mechanic
+    can_report = not is_own_profile and user_rol and user_rol.nombre == 'Usuario'
+
+    # Verificar si ya se ha reportado o dado like
     has_reported = Denuncia.objects.filter(user=current_user, mecanico=mecanico).exists() if can_report else False
     has_liked = Like.objects.filter(user=current_user, mecanico=mecanico).exists() if can_like else False
 
+    # Limitar a una denuncia por usuario
+    if Denuncia.objects.filter(user=current_user).count() >= 1:
+        can_report = False
+
+    # Renderizar la vista con las variables de contexto
     return render(request, "Home/perfiles.html", {
         'mecanico': mecanico,
         'mecanico_user': mecanico_user,
         'current_user': current_user,
         'is_own_profile': is_own_profile,
         'is_current_user_mechanic': is_current_user_mechanic,
-        'can_like': can_like,
+        'can_like': can_like and not has_liked,
         'can_report': can_report and not has_reported,
         'has_liked': has_liked
     })
+
 @login_required
 def like_mecanico(request, mecanico_id):
     mecanico = get_object_or_404(Mecanico, id=mecanico_id)
@@ -102,91 +119,90 @@ def like_mecanico(request, mecanico_id):
 
 def registrar(request):
     if request.method == "POST":
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
-        rol_id = request.POST.get('rol')
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '').strip()
+        confirm_password = request.POST.get('confirm_password', '').strip()
+        rol_id = request.POST.get('rol', '').strip()
 
         # Validaciones básicas
         if not email or not password or not confirm_password or not rol_id:
-            messages.error(request, "Todos los campos son obligatorios.")
+            messages.error(request, "Todos los campos son obligatorios y no pueden estar vacíos o contener solo espacios.")
         elif password != confirm_password:
             messages.error(request, "Las contraseñas no coinciden.")
         else:
-            try:
-                # Crear el usuario
-                user = CustomerUser.objects.create_user(
-                    username=email, 
-                    email=email, 
-                    password=password
-                )
-
-                # Asignar el rol
+            # Verificar si el correo electrónico ya está registrado
+            if CustomerUser.objects.filter(email=email).exists():
+                messages.error(request, "El correo electrónico ya está registrado.")
+            else:
                 try:
-                    rol = Rol.objects.get(id=rol_id)
-                    user.rol = rol
-                    user.save()
+                    # Crear el usuario
+                    user = CustomerUser.objects.create_user(
+                        username=email,
+                        email=email,
+                        password=password
+                    )
 
-                    if rol.id == 2:  # Rol mecánico
-                        estado = "Inactivo"
-                        Mecanico.objects.create(estado=estado, user=user)
+                    # Asignar el rol
+                    try:
+                        rol = Rol.objects.get(id=rol_id)
+                        user.rol = rol
+                        user.save()
 
-                    messages.success(request, "Usuario registrado exitosamente.")
-                    login(request, user)  # Iniciar sesión automáticamente
-                    return redirect('mi_perfil')
+                        if rol.id == 2:  # Si el rol es mecánico
+                            tipo_afiliacion = "Regular"
+                            estado = "Inactivo"
+                            Mecanico.objects.create(tipo_afiliacion=tipo_afiliacion, estado=estado, user=user)
 
-                except Rol.DoesNotExist:
-                    messages.error(request, "El rol especificado no existe.")
-                    
-            except Exception as e:
-                if "Duplicate entry" in str(e):
-                    messages.error(request, "El correo electrónico ya está registrado.")
-                else:
-                    messages.error(request, f"Ocurrió un error: {str(e)}")      
+                        messages.success(request, "Usuario registrado exitosamente.")
+                        auth_login(request, user)  # Iniciar sesión automáticamente
 
-        return render(request, 'Login/registrar.html')
+                        # Redirigir según el rol
+                        return redirect('login')  # O redirigir a una vista de usuario normal
 
-    # Obteniendo todos los roles
+                    except Rol.DoesNotExist:
+                        messages.error(request, "El rol especificado no existe.")
+                        
+                except Exception as e:
+                    messages.error(request, f"Ocurrió un error: {str(e)}")
+
+    # Manejar GET request
     roles = Rol.objects.all()
-    print(roles)
     return render(request, 'Login/registrar.html', {'roles': roles})
 
-def login(request):
+def user_login(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '').strip()
 
-        try:
-            # Buscar al usuario por email
-            user = CustomerUser.objects.get(email=email)
-        except CustomerUser.DoesNotExist:
-            user = None
-
-        if user is not None:
-            # Autenticar al usuario
-            authenticated_user = authenticate(request, username=user.username, password=password)
-            if authenticated_user is not None:
-                auth_login(request, authenticated_user)
-
-                # Verificar el rol del usuario usando rol_id
-                if user.rol_id == 2:  # Rol de mecánico
-                    messages.success(request, 'Inicio de sesión exitoso. Bienvenido Mecánico.')
-                    return redirect('miperfil')  # Redirige a la vista de mecánico
-                elif user.rol_id == 1:  # Rol de usuario
-                    messages.success(request, 'Inicio de sesión exitoso. Bienvenido Usuario.')
-                    return redirect('principal')  # Redirige a la vista de usuario
-                else:
-                    messages.error(request, 'Rol no reconocido.')
-                    return render(request, 'Login/login.html')
-            else:
-                messages.error(request, 'Credenciales incorrectas.')
-                return render(request, 'Login/login.html')
-        else:
-            messages.error(request, 'El correo electrónico no existe.')
+        # Validación de campos vacíos
+        if not email or not password:
+            messages.error(request, 'Ambos campos son obligatorios y no pueden estar vacíos.')
             return render(request, 'Login/login.html')
 
-    return render(request, 'Login/login.html')
+        # Autenticación del usuario por email usando el backend personalizado
+        user = authenticate(request, username=email, password=password)
 
+        if user is not None:
+            auth_login(request, user)
+
+            # Verificar si el usuario es superusuario
+            if user.is_superuser:
+                return redirect('/admin/')
+
+            # Redirigir según el rol del usuario
+            if user.rol_id == 2:
+                return redirect('miperfil', id=user.id)
+            elif user.rol_id == 1:
+                return redirect('principal')
+            else:
+                messages.error(request, 'Rol no reconocido.')
+                return redirect('login')
+
+        else:
+            messages.error(request, 'Credenciales incorrectas.')
+
+    return render(request, 'Login/login.html')
+    
 def logoutusuario(request):
     logout(request)
     return redirect('login')
@@ -215,52 +231,78 @@ def forgot_password(request):
 
 @login_required
 def miperfil(request, id):
-    # Obtener el objeto Mecanico basado en el user_id
-    mecanico = Mecanico.objects.filter(user_id=id).first()
+    user = request.user
 
-    # Obtener el objeto User basado en el user_id
-    user = User.objects.filter(id=id).first()
+    if user.id != id:
+        messages.error(request, "No tienes permiso para acceder a este perfil.")
+        return redirect('principal')
+
+    try:
+        mecanico = user.mecanico
+    except ObjectDoesNotExist:
+        mecanico = None
 
     if request.method == 'POST':
-        # Verificar campos obligatorios: nombres y apellidos
-        if not request.POST.get("nombres") or not request.POST.get("apellidos"):
-            messages.error(request, "Los campos de nombres y apellidos son obligatorios.")
-            return redirect('miperfil', id=id)
+        nombres = request.POST.get("nombres")
+        apellidos = request.POST.get("apellidos")
+        telefono = request.POST.get("telefono")
+        direccion = request.POST.get('direccion')
+        ubicacion = request.POST.get('ubicacion')
+        descripcion = request.POST.get('descripcion')
+        profesion = request.POST.get('profesion')
+        foto = request.FILES.get("foto")
 
-        # Actualizar la información del mecánico
-        if request.FILES.get("foto"):
-            mecanico.foto = request.FILES.get("foto")
-            imagen = FileSystemStorage()
-            imagen.save(mecanico.foto.name, mecanico.foto)
-        mecanico.nombres = request.POST.get("nombres")
-        mecanico.apellidos = request.POST.get("apellidos")
-        mecanico.telefono = request.POST.get("telefono")
-        mecanico.direccion = request.POST.get('direccion')
-        mecanico.ubicacion = request.POST.get('ubicacion')
-        mecanico.descripcion = request.POST.get('descripcion')
-        mecanico.profesion = request.POST.get('profesion')
-        if mecanico.estado == 'Inactivo':
-            mecanico.estado = 'Activo'
-        mecanico.save()
+        try:
+            # Actualizar datos del CustomUser
+            if nombres:
+                user.first_name = nombres
+            if apellidos:
+                user.last_name = apellidos
+            user.save()
 
-        messages.success(request, "Perfil actualizado con éxito.")
+            # Actualizar datos del Mecanico
+            if mecanico:
+                if foto:
+                    imagen = FileSystemStorage()
+                    filename = imagen.save(foto.name, foto)
+                    mecanico.foto = filename
+
+                mecanico.telefono = telefono or mecanico.telefono
+                mecanico.direccion = direccion or mecanico.direccion
+                mecanico.ubicacion = ubicacion or mecanico.ubicacion
+                mecanico.descripcion = descripcion or mecanico.descripcion
+                mecanico.profesion = profesion or mecanico.profesion
+
+                if mecanico.estado == 'Inactivo':
+                    mecanico.estado = 'Activo'
+
+                mecanico.save()
+                
+                messages.success(request, "Perfil actualizado con éxito.")
+            else:
+                messages.error(request, "No se encontró el perfil del mecánico.")
+                
+        except Exception as e:
+            messages.error(request, f"Error al actualizar el perfil: {e}")
+
         return redirect('miperfil', id=id)
 
-    # Incluir tanto el mecánico como el usuario en el contexto
     context = {
-        'mec': [mecanico],
         'user': user,
-        'is_premium': mecanico.tipo_afiliacion == 'premium'  # Asumiendo que el campo tipo_afiliacion indica el tipo de plan
+        'mec': mecanico,
+        'is_premium': mecanico.tipo_afiliacion == 'premium' if mecanico else False
     }
-    return render(request, 'Mecanicos/miperfil.html', context)
+
+    return render(request, 'mecanicos/miperfil.html', context)
+
 
 @login_required
 def planes(request, id):
     try:
-        user = User.objects.get(id=id)
-        mecanico = Mecanico.objects.get(user=user)  # Suponiendo que hay una relación entre User y Mecanico
+        user = CustomerUser.objects.get(id=id)  # Usa CustomerUser en lugar de User
+        mecanico = Mecanico.objects.get(user=user)  # Suponiendo que hay una relación entre CustomerUser y Mecanico
         is_mechanic = True
-    except (User.DoesNotExist, Mecanico.DoesNotExist):
+    except (CustomerUser.DoesNotExist, Mecanico.DoesNotExist):
         user = None
         mecanico = None
         is_mechanic = False
@@ -275,7 +317,7 @@ def planes(request, id):
 @login_required
 def pagos(request, id):
     try:
-        user = User.objects.get(id=id)
+        user = CustomerUser.objects.get(id=id)
         mecanico = Mecanico.objects.get(user=user)
     except User.DoesNotExist:
         return HttpResponseNotFound("Usuario no encontrado.")
@@ -325,7 +367,7 @@ def pagos(request, id):
 @login_required
 def confirmacion_pago(request, id):
     try:
-        user = User.objects.get(id=id)
+        user = CustomerUser.objects.get(id=id)
         if not request.session.get('payment_success', False):
             # Si la variable de sesión no está establecida, redirige al usuario a la página de pago
             return redirect('pagos', id=user.id)
@@ -350,21 +392,23 @@ def confirmacion_pago(request, id):
 
 @login_required
 def configuracion(request, id):
+    # Asegurarse de que el usuario actual es el propietario de la cuenta
     if request.user.id != id:
         return redirect('principal')
 
-    user = get_object_or_404(User, id=id)
+    user = get_object_or_404(CustomerUser, id=id)
 
     if request.method == 'POST':
         action = request.POST.get('action')
 
         if action == 'Actualizar Información':
-            # Actualizar información personal
-            first_name = request.POST.get('first_name')
-            last_name = request.POST.get('last_name')
-            email = request.POST.get('email')
-            username = request.POST.get('username')
+            # Limpiar espacios en los campos
+            first_name = request.POST.get('first_name', '').strip()
+            last_name = request.POST.get('last_name', '').strip()
+            email = request.POST.get('email', '').strip()
+            username = request.POST.get('username', '').strip()
 
+            # Actualizar los datos del usuario con los valores limpios
             user.first_name = first_name
             user.last_name = last_name
             user.email = email
@@ -385,7 +429,6 @@ def configuracion(request, id):
                 messages.error(request, 'La contraseña ingresada es incorrecta.')
 
     return render(request, "Usuarios/configuracion.html", {'user': user})
-
 #endregion
 
 #region admin
@@ -416,31 +459,26 @@ def lista_mantenimientos(request):
 #endregion
 
 @login_required
-def report_mecanico(request, id):
+def report_mecanico(request, mecanico_id):
+    mecanico = get_object_or_404(Mecanico, id=mecanico_id)
+    user = request.user
+
+    # Verificar si el usuario ya ha realizado una denuncia
+    if Denuncia.objects.filter(user=user, mecanico=mecanico).exists():
+        messages.warning(request, "Ya has realizado una denuncia sobre este mecánico.")
+        return redirect('perfiles', id=mecanico_id)
+
     if request.method == 'POST':
-        mecanico = get_object_or_404(Mecanico, id=id)
         tipo_denuncia = request.POST.get('tipo_denuncia')
         descripcion = request.POST.get('descripcion')
 
-        # Verificar si el usuario ya ha denunciado a este mecánico
-        denuncia_existente = Denuncia.objects.filter(user=request.user, mecanico=mecanico).exists()
+        # Crear una nueva denuncia
+        Denuncia.objects.create(
+            user=user,
+            mecanico=mecanico,
+            tipo_denuncia=tipo_denuncia,
+            descripcion=descripcion
+        )
+        messages.success(request, "Tu denuncia ha sido enviada.")
 
-        if denuncia_existente:
-            messages.error(request, 'Ya has denunciado a este mecánico anteriormente. No puedes enviar una nueva denuncia.')
-        else:
-            # Crear una nueva denuncia
-            Denuncia.objects.create(
-                user=request.user,
-                mecanico=mecanico,
-                tipo_denuncia=tipo_denuncia,
-                descripcion=descripcion
-            )
-
-            # Añadir un mensaje de éxito
-            messages.success(request, 'Tu denuncia ha sido enviada. La revisaremos en las próximas horas.')
-
-        # Redirigir a la página de detalles del mecánico después de hacer la denuncia o si ya ha sido denunciado
-        return redirect('perfiles', id=id)
-
-    return redirect('perfiles', id=id)
-    
+    return redirect('perfiles', id=mecanico_id)

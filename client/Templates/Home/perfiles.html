@@ -1,19 +1,8 @@
 {% include 'inc/header.html' %}
 {% load static %}
 
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}
-{% endif %}
-
-
 <style>
-    body,
-    html {
+    body, html {
         margin: 0;
         padding: 0;
         width: 100%;
@@ -40,7 +29,6 @@
         height: 200px;
         border-radius: 50%;
         object-fit: cover;
-        /* Asegura que la imagen mantenga sus proporciones y no se deforme */
     }
 
     .card {
@@ -54,7 +42,7 @@
     }
 
     .card-body {
-        padding: 0px;
+        padding: 0;
     }
 
     .list-group-item {
@@ -79,44 +67,34 @@
         padding: 8px;
         border-radius: 5px;
         text-align: center;
+        border: none;
+        color: white;
+        cursor: pointer;
     }
 
     .btn-like {
         background-color: #28a745;
-        color: white;
     }
 
     .btn-report {
         background-color: #dc3545;
-        color: white;
-    }
-
-    .form-report {
-        display: none;
-    }
-
-    .form-report.show {
-        display: block;
     }
 
     .alert-container {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        z-index: 1000;
+        margin-bottom: 20px;
     }
 
     .alert {
         padding: 15px;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         border: 1px solid transparent;
         border-radius: 4px;
     }
 
-    .alert-success {
-        color: #155724;
-        background-color: #d4edda;
-        border-color: #c3e6cb;
+    .alert-warning {
+        color: #856404;
+        background-color: #fff3cd;
+        border-color: #ffeeba;
     }
 
     h5.text-uppercase {
@@ -141,120 +119,126 @@
         <div class="col-md-12">
             <div class="card shadow-lg">
                 <div class="card-body">
+                    <!-- Alertas -->
+                    {% if messages %}
+                        <div class="alert-container">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <div class="row">
                         <div class="col-md-4 text-center">
                             <img src="{% static 'img/' %}{{ mecanico.foto }}"
                                 class="img-fluid rounded-circle mecanico-img"
-                                alt="{{ user.first_name }} {{ user.last_name }}">
+                                alt="{{ mecanico_user.first_name }} {{ mecanico_user.last_name }}">
                             <h5 class="text-uppercase">{{ mecanico_user.first_name }} {{ mecanico_user.last_name }}</h5>
                             <p class="text-muted">{{ mecanico.profesion }}</p>
 
                             <div class="action-buttons">
-                                {% if can_like %}
-                                    <form action="{% url 'like_mecanico' mecanico.id %}" method="post">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-like">
-                                            {% if has_liked %} 👎 Quitar Like {% else %} 👍 Dar Like {% endif %}
-                                        </button>
-                                    </form>
-                                {% else %}
-                                    {% if not is_authenticated %}
-                                    <div class="alert alert-warning" role="alert">
-                                        Debes iniciar sesión para interactuar.
-                                    </div>
+                                <!-- Mostrar el botón de like solo si el usuario está autenticado y no es el propio mecánico -->
+                                {% if user.is_authenticated %}
+                                    {% if user.id != mecanico_user.id %}
+                                        <form id="likeForm" action="{% url 'like_mecanico' mecanico.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-like">
+                                                {% if has_liked %} 👎 {{ mecanico.num_likes }} {% else %} 👍 {{ mecanico.num_likes }} {% endif %}
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <div class="alert alert-warning" role="alert">
+                                            No puedes dar like a tu propio perfil.
+                                        </div>
                                     {% endif %}
+                                {% else %}
+                                    <div class="alert alert-warning" role="alert">
+                                        Debes iniciar sesión para dar like.
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Mostrar el botón de denuncia solo si el usuario está autenticado y no es el propio mecánico -->
+                                {% if user.is_authenticated %}
+                                    {% if user.id != mecanico_user.id %}
+                                        <button id="reportButton" class="btn btn-report" data-bs-toggle="modal" data-bs-target="#reportModal">🚫 Denunciar</button>
+                                    {% else %}
+                                        <div class="alert alert-warning" role="alert">
+                                            No puedes denunciar tu propio perfil.
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="alert alert-warning" role="alert">
+                                        Debes iniciar sesión para denunciar.
+                                    </div>
                                 {% endif %}
                             </div>
-                            
-
-
-
                         </div>
+
                         <div class="col-md-8">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">
                                     <strong>
                                         Teléfono:
                                         <a href="https://wa.me/{{ mecanico.telefono }}" target="_blank">
-                                            <img src="{% static 'img/whatsapp.png' %}" width="30px" height="30px"
-                                                alt="WhatsApp">
+                                            <img src="{% static 'img/whatsapp.png' %}" width="30px" height="30px" alt="WhatsApp">
                                         </a>
                                     </strong>
                                     {{ mecanico.telefono }}
                                 </li>
-                                <li class="list-group-item"><strong>Correo electrónico:</strong> {{ user.email }}</li>
+                                <li class="list-group-item"><strong>Correo electrónico:</strong> {{ mecanico_user.email }}</li>
                                 <li class="list-group-item"><strong>Ubicación:</strong> {{ mecanico.ubicacion }}</li>
-                                <li class="list-group-item"><strong>Descripción:</strong> {{ mecanico.descripcion }}
-                                </li>
-                                <li class="list-group-item"><strong>Tipo de afiliación:</strong> {{mecanico.tipo_afiliacion }}</li>
+                                <li class="list-group-item"><strong>Descripción:</strong> {{ mecanico.descripcion }}</li>
+                                <li class="list-group-item"><strong>Tipo de afiliación:</strong> {{ mecanico.tipo_afiliacion }}</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- Formulario para la denuncia -->
-                    <div class="form-report" id="reportForm">
-                        <form action="{% url 'report_mecanico' mecanico.id %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="mecanico_id" value="{{ mecanico.id }}">
-
-                            <div class="form-group">
-                                <label for="tipo_denuncia">Tipo de denuncia:</label>
-                                <select name="tipo_denuncia" id="tipo_denuncia" class="form-control">
-                                    <option value="Trabajo Deficiente">Trabajo Deficiente</option>
-                                    <option value="Retrasos en el Servicio">Retrasos en el Servicio</option>
-                                    <option value="Maltrato o Comportamiento Inadecuado">Maltrato o Comportamiento
-                                        Inadecuado</option>
-                                    <option value="Fraude o Engaño">Fraude o Engaño</option>
-                                    <option value="Daños Adicionales">Daños Adicionales</option>
-                                    <option value="Falta de Cumplimiento con el Presupuesto">Falta de Cumplimiento con
-                                        el Presupuesto</option>
-                                    <option value="Falta de Profesionalismo">Falta de Profesionalismo</option>
-                                    <option value="Servicios No Solicitados">Servicios No Solicitados</option>
-                                    <option value="Problemas con la Factura">Problemas con la Factura</option>
-                                    <option value="Falta de Documentación">Falta de Documentación</option>
-                                    <option value="Otro">Otro</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="descripcion">Descripción:</label>
-                                <textarea name="descripcion" id="descripcion" class="form-control" rows="4"></textarea>
-                            </div>
-
-                            <button type="submit" class="btn btn-report">🚫 Denunciar</button>
-                        </form>
-                    </div>
-
                     <div class="mt-4">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.7769362439466!2d-75.57389068456535!3d6.244203995471625!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e40e73bb1bd1919%3A0x269f65b6ff6d8850!2sMedellin%2C%20Antioquia!5e0!3m2!1sen!2sco!4v1624542683727!5m2!1sen!2sco"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.7769362439466!2d-75.57389068456535!3d6.244203995471625!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e40e73bb1bd1919%3A0x269f65b6ff6d8850!2sMedellin%2C%20Antioquia!5e0!3m2!1sen!2sco!4v1624542426795!5m2!1sen!2sco"
                             width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    document.getElementById('reportButton').addEventListener('click', function () {
-        var form = document.getElementById('reportForm');
-        form.classList.toggle('show');
-    });
+<!-- Modal para denuncia -->
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">Formulario de Denuncia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'report_mecanico' mecanico.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="mecanico_id" value="{{ mecanico.id }}">
 
-    // Código para ocultar las alertas después de unos segundos
-    document.addEventListener('DOMContentLoaded', function () {
-        var alerts = document.querySelectorAll('.alert-container .alert');
-        alerts.forEach(function (alert) {
-            setTimeout(function () {
-                alert.style.opacity = '0';
-                setTimeout(function () {
-                    alert.remove();
-                }, 500);
-            }, 5000);
-        });
-    });
-</script>
-
+                    <div class="mb-3">
+                        <label for="tipo_denuncia" class="form-label">Tipo de denuncia:</label>
+                        <select name="tipo_denuncia" id="tipo_denuncia" class="form-select">
+                            <option value="Trabajo Deficiente">Trabajo Deficiente</option>
+                            <option value="Retrasos en el Servicio">Retrasos en el Servicio</option>
+                            <option value="Maltrato o Comportamiento Inadecuado">Maltrato o Comportamiento Inadecuado</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción:</label>
+                        <textarea name="descripcion" id="descripcion" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Enviar Denuncia</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% include 'inc/footer.html' %}
